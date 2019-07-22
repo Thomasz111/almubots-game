@@ -9,7 +9,7 @@ object DesktopLauncher {
     @JvmStatic
     fun main(arg: Array<String>) {
         val config = LwjglApplicationConfiguration()
-        config.title = "Drop"
+        config.title = "Almubots"
         config.width = Constants.screenWidth
         config.height = Constants.screenHeight
         LwjglApplication(Game(), config)

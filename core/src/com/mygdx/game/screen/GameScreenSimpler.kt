@@ -5,19 +5,14 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Circle
-import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 
-class GameScreenSimple(val game: Game) : KtxScreen {
-    // load the image for almuBot, 64x64
+class GameScreenSimpler(val game: Game) : KtxScreen {
     private val botImage = Texture(Gdx.files.internal("assets\\textures\\bot.png"))
-    // The camera ensures we can render using our target resolution of 800x480
-    //    pixels no matter what the screen resolution is.
     private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
-    // create a Circle to logically represent the almuBot
     private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f))
     private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f))
 
@@ -75,29 +70,13 @@ class GameScreenSimple(val game: Game) : KtxScreen {
 
         // check for collisions with other bots
         if (almuBotCircle.hitBox.overlaps(almuBotDummy.hitBox)) {
-            val collisionAngle = almuBotCircle.speed.angle(almuBotDummy.speed)
-            // collision from behind
-            if (collisionAngle <= 90 && collisionAngle >= -90){
-                if (almuBotCircle.speed.len() > almuBotDummy.speed.len()) {
-                    almuBotCircle.speed = reflectedSpeed(almuBotCircle.speed, almuBotCircle.hitBox, almuBotDummy.hitBox)
-                    almuBotCircle.hitBox.x = almuBotCircle.previousPosition.x
-                    almuBotCircle.hitBox.y = almuBotCircle.previousPosition.y
-                } else {
-                    almuBotDummy.speed = reflectedSpeed(almuBotDummy.speed, almuBotCircle.hitBox, almuBotDummy.hitBox)
-                    almuBotDummy.hitBox.x = almuBotDummy.previousPosition.x
-                    almuBotDummy.hitBox.y = almuBotDummy.previousPosition.y
-                }
-            } else {
-                almuBotCircle.speed = reflectedSpeed(almuBotCircle.speed, almuBotCircle.hitBox, almuBotDummy.hitBox)
-
-                almuBotDummy.speed = reflectedSpeed(almuBotDummy.speed, almuBotCircle.hitBox, almuBotDummy.hitBox)
-
-                almuBotCircle.hitBox.x = almuBotCircle.previousPosition.x
-                almuBotCircle.hitBox.y = almuBotCircle.previousPosition.y
-
-                almuBotDummy.hitBox.x = almuBotDummy.previousPosition.x
-                almuBotDummy.hitBox.y = almuBotDummy.previousPosition.y
-            }
+            val previousSpeed = almuBotCircle.speed
+            almuBotCircle.speed = almuBotDummy.speed
+            almuBotDummy.speed = previousSpeed
+            almuBotCircle.hitBox.x = almuBotCircle.previousPosition.x
+            almuBotCircle.hitBox.y = almuBotCircle.previousPosition.y
+            almuBotDummy.hitBox.x = almuBotDummy.previousPosition.x
+            almuBotDummy.hitBox.y = almuBotDummy.previousPosition.y
         }
 
         // check if bot is in bounds
@@ -145,14 +124,6 @@ class GameScreenSimple(val game: Game) : KtxScreen {
                 (hitBox.y - hitBox.radius <= 0) ||
                 (hitBox.x + hitBox.radius >=  screenWidth) ||
                 (hitBox.y + hitBox.radius >=  screenHeight)
-    }
-
-    private fun reflectedSpeed(speed: Vector2, hitBox1: Circle, hitBox2: Circle): Vector2 {
-        val m = (hitBox2.x - hitBox1.x) / (hitBox1.y - hitBox2.y)
-        val newSpeed = Vector2()
-        newSpeed.x = speed.x * ((1 - m * m) / (m * m + 1)) + speed.y * ((2 * m) / (m * m + 1))
-        newSpeed.y = speed.x * ((2 * m) / (m * m + 1)) + speed.y * ((m * m - 1) / (m * m + 1))
-        return newSpeed
     }
 
     override fun dispose() {
