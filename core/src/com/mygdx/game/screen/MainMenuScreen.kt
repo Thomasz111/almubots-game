@@ -3,10 +3,11 @@ package com.mygdx.game.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.mygdx.game.Game
+import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 
 class MainMenuScreen(val game: Game) : KtxScreen {
-    private val camera = OrthographicCamera().apply { setToOrtho(false, 800f, 480f) }
+    private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
 
     override fun render(delta: Float) {
         camera.update()
