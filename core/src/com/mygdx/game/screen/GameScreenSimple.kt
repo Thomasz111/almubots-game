@@ -17,10 +17,7 @@ class GameScreenSimple(val game: Game) : KtxScreen {
     // The camera ensures we can render using our target resolution of 800x480
     //    pixels no matter what the screen resolution is.
     private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
-    // create a Rectangle to logically represent the almuBot
-    // center the almuBot horizontally
-    // bottom left almuBot corner is 20px above
-    // private val almuBot = Rectangle(800f / 2f - 64f / 2f, 20f, 64f, 64f)
+    // create a Circle to logically represent the almuBot
     private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f))
     private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f))
 
@@ -33,8 +30,8 @@ class GameScreenSimple(val game: Game) : KtxScreen {
 
         // begin a new batch and draw the almuBot
         game.batch.begin()
-        game.font.draw(game.batch, "Y speed: " + almuBotCircle.speed.y, 0f, 480f)
-        game.font.draw(game.batch, "X speed: " + almuBotCircle.speed.x, 0f, 460f)
+        game.font.draw(game.batch, "player Y speed: " + almuBotCircle.speed.y, 0f, 480f)
+        game.font.draw(game.batch, "player X speed: " + almuBotCircle.speed.x, 0f, 460f)
 
         game.font.draw(game.batch, "dummy Y speed: " + almuBotDummy.speed.y, 0f, 440f)
         game.font.draw(game.batch, "dummy X speed: " + almuBotDummy.speed.x, 0f, 420f)
