@@ -19,12 +19,12 @@ class MainMenuScreen(val game: Game) : KtxScreen {
         game.batch.end()
 
         if (Gdx.input.isTouched) {
-//            game.addScreen(GameScreen(game))
-//            game.setScreen<GameScreen>()
-//            game.removeScreen<MainMenuScreen>()
-            game.batch.begin()
-            game.font.draw(game.batch, "AAAAAAAAAAA", 100f, 200f)
-            game.batch.end()
+            game.addScreen(GameScreen(game))
+            game.setScreen<GameScreen>()
+            game.removeScreen<MainMenuScreen>()
+//            game.batch.begin()
+//            game.font.draw(game.batch, "AAAAAAAAAAA", 100f, 200f)
+//            game.batch.end()
             dispose()
         }
     }
