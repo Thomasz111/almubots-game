@@ -4,21 +4,23 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
+import ktx.graphics.use
 import java.nio.file.Paths
 
-class GameScreenSimple(val game: Game) : KtxScreen {
+class GameScreenSimple(private val batch: Batch,
+                       private val font: BitmapFont,
+                       private val camera: OrthographicCamera) : KtxScreen {
     // load the image for almuBot, 64x64
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
-    // The camera ensures we can render using our target resolution of 800x480
-    //    pixels no matter what the screen resolution is.
-    private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
     // create a Circle to logically represent the almuBot
     private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f))
     private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f))
@@ -28,26 +30,25 @@ class GameScreenSimple(val game: Game) : KtxScreen {
         camera.update()
 
         // tell the SpriteBatch to render in the coordinate system specified by the camera.
-        game.batch.projectionMatrix = camera.combined
+        batch.projectionMatrix = camera.combined
 
         // begin a new batch and draw the almuBot
-        game.batch.begin()
-        game.font.draw(game.batch, "player Y speed: " + almuBotCircle.speed.y, 0f, 480f)
-        game.font.draw(game.batch, "player X speed: " + almuBotCircle.speed.x, 0f, 460f)
+        batch.use {
+            font.draw(it, "player Y speed: " + almuBotCircle.speed.y, 0f, 480f)
+            font.draw(it, "player X speed: " + almuBotCircle.speed.x, 0f, 460f)
 
-        game.font.draw(game.batch, "dummy Y speed: " + almuBotDummy.speed.y, 0f, 440f)
-        game.font.draw(game.batch, "dummy X speed: " + almuBotDummy.speed.x, 0f, 420f)
+            font.draw(it, "dummy Y speed: " + almuBotDummy.speed.y, 0f, 440f)
+            font.draw(it, "dummy X speed: " + almuBotDummy.speed.x, 0f, 420f)
 
-
-        game.batch.draw(botImage, almuBotCircle.hitBox.x - almuBotCircle.hitBox.radius,
-                almuBotCircle.hitBox.y - almuBotCircle.hitBox.radius,
-                almuBotCircle.hitBox.radius * 2,
-                almuBotCircle.hitBox.radius * 2)
-        game.batch.draw(botImage, almuBotDummy.hitBox.x - almuBotCircle.hitBox.radius,
-                almuBotDummy.hitBox.y - almuBotCircle.hitBox.radius,
-                almuBotDummy.hitBox.radius * 2,
-                almuBotDummy.hitBox.radius * 2)
-        game.batch.end()
+            batch.draw(botImage, almuBotCircle.hitBox.x - almuBotCircle.hitBox.radius,
+                    almuBotCircle.hitBox.y - almuBotCircle.hitBox.radius,
+                    almuBotCircle.hitBox.radius * 2,
+                    almuBotCircle.hitBox.radius * 2)
+            batch.draw(botImage, almuBotDummy.hitBox.x - almuBotCircle.hitBox.radius,
+                    almuBotDummy.hitBox.y - almuBotCircle.hitBox.radius,
+                    almuBotDummy.hitBox.radius * 2,
+                    almuBotDummy.hitBox.radius * 2)
+        }
 
         // process user input
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
