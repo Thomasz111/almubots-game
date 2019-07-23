@@ -7,9 +7,8 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
-import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
+import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -20,8 +19,8 @@ class GameScreenNotSimple(private val batch: Batch,
                           private val camera: OrthographicCamera) : KtxScreen {
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage)
-    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage)
+    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, CirclePhysics())
+    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, CirclePhysics())
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
@@ -69,92 +68,23 @@ class GameScreenNotSimple(private val batch: Batch,
         }
 
         // check for collisions with other bots
-        if (almuBotCircle.hitBox.overlaps(almuBotDummy.hitBox)) {
-            incidentalSpeed(almuBotCircle, almuBotDummy)
-
-            almuBotCircle.hitBox.x = almuBotCircle.previousPosition.x
-            almuBotCircle.hitBox.y = almuBotCircle.previousPosition.y
-            almuBotDummy.hitBox.x = almuBotDummy.previousPosition.x
-            almuBotDummy.hitBox.y = almuBotDummy.previousPosition.y
+        if (almuBotCircle.collisionOccurredWith(almuBotDummy.hitBox)) {
+            almuBotCircle.manageCollisionWith(almuBotDummy)
         }
 
         // check if bot is in bounds
-        if (almuBotOutOfBounds(almuBotCircle.hitBox, Constants.screenWidth, Constants.screenHeight)) {
-            putBotBackToBounds(almuBotCircle, Constants.screenWidth, Constants.screenHeight)
-            almuBotCircle.hitBox.x = almuBotCircle.previousPosition.x
-            almuBotCircle.hitBox.y = almuBotCircle.previousPosition.y
+        if (almuBotCircle.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
+            almuBotCircle.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
         }
 
         // check if bot is in bounds
-        if (almuBotOutOfBounds(almuBotDummy.hitBox, Constants.screenWidth, Constants.screenHeight)) {
-            putBotBackToBounds(almuBotDummy, Constants.screenWidth, Constants.screenHeight)
-            almuBotDummy.hitBox.x = almuBotDummy.previousPosition.x
-            almuBotDummy.hitBox.y = almuBotDummy.previousPosition.y
+        if (almuBotDummy.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
+            almuBotDummy.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
         }
 
-        almuBotCircle.previousPosition.x = almuBotCircle.hitBox.x
-        almuBotCircle.previousPosition.y = almuBotCircle.hitBox.y
-        almuBotCircle.hitBox.x += almuBotCircle.speed.x * delta
-        almuBotCircle.hitBox.y += almuBotCircle.speed.y * delta
+        almuBotCircle.update(delta)
 
-        almuBotDummy.previousPosition.x = almuBotDummy.hitBox.x
-        almuBotDummy.previousPosition.y = almuBotDummy.hitBox.y
-        almuBotDummy.hitBox.x += almuBotDummy.speed.x * delta
-        almuBotDummy.hitBox.y += almuBotDummy.speed.y * delta
-    }
-
-    private fun incidentalSpeed(almuBot1: AlmuBotSimple, almuBot2: AlmuBotSimple) {
-        val m = (almuBot1.hitBox.y - almuBot2.hitBox.y) / (almuBot1.hitBox.x - almuBot2.hitBox.x)
-        val alpha = Math.atan(m.toDouble())
-
-        val rotatedSpeed1 = Vector2()
-        rotatedSpeed1.x = (almuBot1.speed.x * Math.cos(-alpha) - almuBot1.speed.y * Math.sin(-alpha)).toFloat()
-        rotatedSpeed1.y = (almuBot1.speed.x * Math.sin(-alpha) + almuBot1.speed.y * Math.cos(-alpha)).toFloat()
-
-        val rotatedSpeed2 = Vector2()
-        rotatedSpeed2.x = (almuBot2.speed.x * Math.cos(-alpha) - almuBot2.speed.y * Math.sin(-alpha)).toFloat()
-        rotatedSpeed2.y = (almuBot2.speed.x * Math.sin(-alpha) + almuBot2.speed.y * Math.cos(-alpha)).toFloat()
-
-        val newRotatedSpeed1 = Vector2()
-        newRotatedSpeed1.x = rotatedSpeed2.x
-        newRotatedSpeed1.y = rotatedSpeed1.y
-
-        val newRotatedSpeed2 = Vector2()
-        newRotatedSpeed2.x = rotatedSpeed1.x
-        newRotatedSpeed2.y = rotatedSpeed2.y
-
-        val newSpeed1 = Vector2()
-        newSpeed1.x = (newRotatedSpeed1.x * Math.cos(alpha) - newRotatedSpeed1.y * Math.sin(alpha)).toFloat()
-        newSpeed1.y = (newRotatedSpeed1.x * Math.sin(alpha) + newRotatedSpeed1.y * Math.cos(alpha)).toFloat()
-
-        val newSpeed2 = Vector2()
-        newSpeed2.x = (newRotatedSpeed2.x * Math.cos(alpha) - newRotatedSpeed2.y * Math.sin(alpha)).toFloat()
-        newSpeed2.y = (newRotatedSpeed2.x * Math.sin(alpha) + newRotatedSpeed2.y * Math.cos(alpha)).toFloat()
-
-        almuBot1.speed = newSpeed1
-        almuBot2.speed = newSpeed2
-    }
-
-    private fun putBotBackToBounds(almuBotCircle: AlmuBotSimple, screenWidth: Int, screenHeight: Int) {
-        if (almuBotCircle.hitBox.x - almuBotCircle.hitBox.radius <= 0) {
-            almuBotCircle.speed.x = -almuBotCircle.speed.x
-        }
-        if (almuBotCircle.hitBox.y - almuBotCircle.hitBox.radius <= 0) {
-            almuBotCircle.speed.y = -almuBotCircle.speed.y
-        }
-        if (almuBotCircle.hitBox.x + almuBotCircle.hitBox.radius >=  screenWidth) {
-            almuBotCircle.speed.x = -almuBotCircle.speed.x
-        }
-        if (almuBotCircle.hitBox.y + almuBotCircle.hitBox.radius >=  screenHeight) {
-            almuBotCircle.speed.y = -almuBotCircle.speed.y
-        }
-    }
-
-    private fun almuBotOutOfBounds(hitBox: Circle, screenWidth: Int, screenHeight: Int): Boolean {
-        return (hitBox.x - hitBox.radius <= 0) ||
-                (hitBox.y - hitBox.radius <= 0) ||
-                (hitBox.x + hitBox.radius >=  screenWidth) ||
-                (hitBox.y + hitBox.radius >=  screenHeight)
+        almuBotDummy.update(delta)
     }
 
     override fun dispose() {

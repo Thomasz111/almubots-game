@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
+import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -22,8 +22,8 @@ class GameScreenSimple(private val batch: Batch,
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
     // create a Circle to logically represent the almuBot
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage)
-    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage)
+    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, CirclePhysics())
+    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, CirclePhysics())
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
