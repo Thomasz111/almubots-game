@@ -10,11 +10,13 @@ import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
+import java.nio.file.Paths
 
 class GameScreenNotSimple(val game: Game) : KtxScreen {
-    private val botImage = Texture(Gdx.files.internal("assets\\textures\\bot.png"))
+    private val path = Paths.get("assets/textures").toAbsolutePath().toString()
+    private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
     private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 4f / 2f, 40f, 32f))
+    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f))
     private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f))
 
     override fun render(delta: Float) {

@@ -10,10 +10,12 @@ import com.mygdx.game.Game
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
+import java.nio.file.Paths
 
 class GameScreenSimple(val game: Game) : KtxScreen {
     // load the image for almuBot, 64x64
-    private val botImage = Texture(Gdx.files.internal("assets\\textures\\bot.png"))
+    private val path = Paths.get("assets/textures").toAbsolutePath().toString()
+    private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
     // The camera ensures we can render using our target resolution of 800x480
     //    pixels no matter what the screen resolution is.
     private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
