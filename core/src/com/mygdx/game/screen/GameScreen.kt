@@ -14,13 +14,14 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.nio.file.Paths
 
-class GameScreenNotSimple(private val batch: Batch,
-                          private val font: BitmapFont,
-                          private val camera: OrthographicCamera) : KtxScreen {
+class GameScreen(private val batch: Batch,
+                 private val font: BitmapFont,
+                 private val camera: OrthographicCamera,
+                 private val physics: CirclePhysics) : KtxScreen {
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, CirclePhysics())
-    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, CirclePhysics())
+    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, physics)
+    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, physics)
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
@@ -83,7 +84,6 @@ class GameScreenNotSimple(private val batch: Batch,
         }
 
         almuBotCircle.update(delta)
-
         almuBotDummy.update(delta)
     }
 

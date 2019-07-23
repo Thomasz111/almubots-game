@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.mygdx.game.Game
+import com.mygdx.game.physics.CirclePhysicsHeavy
+import com.mygdx.game.physics.CirclePhysicsMomentum
+import com.mygdx.game.physics.CirclePhysicsSimple
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -25,20 +28,20 @@ class MainMenuScreen(private val game: Game,
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-            game.addScreen(GameScreenSimple(batch, font, camera))
-            game.setScreen<GameScreenSimple>()
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsHeavy()))
+            game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            game.addScreen(GameScreenSimpler(batch, font, camera))
-            game.setScreen<GameScreenSimpler>()
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsSimple()))
+            game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-            game.addScreen(GameScreenNotSimple(batch, font, camera))
-            game.setScreen<GameScreenNotSimple>()
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsMomentum()))
+            game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
