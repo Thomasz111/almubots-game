@@ -16,8 +16,9 @@ class MainMenuScreen(val game: Game) : KtxScreen {
 
         game.batch.begin()
         game.font.draw(game.batch, "Welcome to ALMUBOTS!!! ", 100f, 150f)
-        game.font.draw(game.batch, "press 1 to test simple physics", 100f, 100f)
-        game.font.draw(game.batch, "press 2 to test simpler physics", 100f, 50f)
+        game.font.draw(game.batch, "press 1 to test simple physics", 100f, 110f)
+        game.font.draw(game.batch, "press 2 to test simpler physics", 100f, 70f)
+        game.font.draw(game.batch, "press 3 to test simpler physics", 100f, 30f)
         game.batch.end()
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
@@ -29,6 +30,12 @@ class MainMenuScreen(val game: Game) : KtxScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             game.addScreen(GameScreenSimpler(game))
             game.setScreen<GameScreenSimpler>()
+            game.removeScreen<MainMenuScreen>()
+            dispose()
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+            game.addScreen(GameScreenNotSimple(game))
+            game.setScreen<GameScreenNotSimple>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
