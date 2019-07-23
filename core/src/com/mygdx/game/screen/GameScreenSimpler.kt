@@ -19,8 +19,8 @@ class GameScreenSimpler(private val batch: Batch,
                         private val camera: OrthographicCamera) : KtxScreen {
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f))
-    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f))
+    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage)
+    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage)
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
@@ -37,14 +37,8 @@ class GameScreenSimpler(private val batch: Batch,
             font.draw(it, "dummy Y speed: " + almuBotDummy.speed.y, 0f, 440f)
             font.draw(it, "dummy X speed: " + almuBotDummy.speed.x, 0f, 420f)
 
-            batch.draw(botImage, almuBotCircle.hitBox.x - almuBotCircle.hitBox.radius,
-                    almuBotCircle.hitBox.y - almuBotCircle.hitBox.radius,
-                    almuBotCircle.hitBox.radius * 2,
-                    almuBotCircle.hitBox.radius * 2)
-            batch.draw(botImage, almuBotDummy.hitBox.x - almuBotCircle.hitBox.radius,
-                    almuBotDummy.hitBox.y - almuBotCircle.hitBox.radius,
-                    almuBotDummy.hitBox.radius * 2,
-                    almuBotDummy.hitBox.radius * 2)
+            almuBotCircle.draw(it)
+            almuBotDummy.draw(it)
         }
 
         // process user input
