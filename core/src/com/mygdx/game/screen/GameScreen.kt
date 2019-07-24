@@ -17,12 +17,11 @@ import java.nio.file.Paths
 class GameScreen(private val batch: Batch,
                  private val font: BitmapFont,
                  private val camera: OrthographicCamera,
-                 private val physics: CirclePhysics) : KtxScreen {
+                 private val physics: CirclePhysics,
+                 private val botsNum: Int) : KtxScreen {
     private val path = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
-    private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, physics)
-    private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, physics)
-    private val almuBotDummy2 = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 400f, 32f), botImage, physics)
+    private val bots = Array(botsNum) { botNum -> AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, (botNum + 1) * 70f, 32f), botImage, physics)}
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
@@ -33,79 +32,68 @@ class GameScreen(private val batch: Batch,
 
         // begin a new batch and draw the almuBot
         batch.use {
-            font.draw(it, "player Y speed: " + almuBotCircle.speed.y, 0f, 480f)
-            font.draw(it, "player X speed: " + almuBotCircle.speed.x, 0f, 460f)
+            if (bots.isNotEmpty()) {
+                font.draw(it, "bot1 Y speed: " + bots[0].speed.y, 0f, 480f)
+                font.draw(it, "bot1 X speed: " + bots[0].speed.x, 0f, 460f)
+            }
 
-            font.draw(it, "dummy Y speed: " + almuBotDummy.speed.y, 0f, 440f)
-            font.draw(it, "dummy X speed: " + almuBotDummy.speed.x, 0f, 420f)
+            if (bots.size >= 2) {
+                font.draw(it, "bot2 Y speed: " + bots[1].speed.y, 0f, 440f)
+                font.draw(it, "bot2 X speed: " + bots[1].speed.x, 0f, 420f)
+            }
 
-            almuBotCircle.draw(it)
-            almuBotDummy.draw(it)
-            almuBotDummy2.draw(it)
+            bots.forEach { bot -> bot.draw(it) }
         }
 
         // process user input
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            almuBotCircle.speed.x -= 10
+        if (bots.isNotEmpty()) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                bots[0].speed.x -= 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                bots[0].speed.x += 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                bots[0].speed.y += 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                bots[0].speed.y -= 10
+            }
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            almuBotCircle.speed.x += 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            almuBotCircle.speed.y += 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            almuBotCircle.speed.y -= 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            almuBotDummy.speed.x -= 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            almuBotDummy.speed.x += 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            almuBotDummy.speed.y += 10
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            almuBotDummy.speed.y -= 10
+        if (bots.size >= 2) {
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                bots[1].speed.x -= 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                bots[1].speed.x += 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                bots[1].speed.y += 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                bots[1].speed.y -= 10
+            }
         }
 
         // check for collisions with other bots
-        if (almuBotCircle.collisionOccurredWith(almuBotDummy.hitBox)) {
-            almuBotCircle.manageCollisionWith(almuBotDummy)
-        }
-        if (almuBotCircle.collisionOccurredWith(almuBotDummy2.hitBox)) {
-            almuBotCircle.manageCollisionWith(almuBotDummy2)
-        }
-        if (almuBotDummy.collisionOccurredWith(almuBotDummy2.hitBox)) {
-            almuBotDummy.manageCollisionWith(almuBotDummy2)
-        }
-        if (almuBotDummy.collisionOccurredWith(almuBotCircle.hitBox)) {
-            almuBotDummy.manageCollisionWith(almuBotCircle)
-        }
-        if (almuBotDummy2.collisionOccurredWith(almuBotDummy.hitBox)) {
-            almuBotDummy2.manageCollisionWith(almuBotDummy)
-        }
-        if (almuBotDummy2.collisionOccurredWith(almuBotCircle.hitBox)) {
-            almuBotDummy2.manageCollisionWith(almuBotCircle)
+        for (bot1 in bots) {
+            for (bot2 in bots) {
+                if (bot1 != bot2) {
+                    if (bot1.collisionOccurredWith(bot2.hitBox)) {
+                        bot1.manageCollisionWith(bot2)
+                    }
+                }
+            }
         }
 
-        // check if bot is in bounds
-        if (almuBotCircle.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
-            almuBotCircle.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
+        // wall collisions
+        bots.forEach { bot ->
+            if (bot.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
+                bot.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
+            }
         }
 
-        // check if bot is in bounds
-        if (almuBotDummy.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
-            almuBotDummy.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
-        }
-        if (almuBotDummy2.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
-            almuBotDummy2.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
-        }
-
-        almuBotCircle.update(delta)
-        almuBotDummy.update(delta)
-        almuBotDummy2.update(delta)
+        bots.forEach { bot -> bot.update(delta) }
     }
 
     override fun dispose() {

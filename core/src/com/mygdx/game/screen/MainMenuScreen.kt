@@ -27,20 +27,22 @@ class MainMenuScreen(private val game: Game,
             font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
         }
 
+        val numOfBots = 5
+
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsHeavy()))
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsHeavy(), numOfBots))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsSimple()))
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsSimple(), numOfBots))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsMomentum()))
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsMomentum(), numOfBots))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()

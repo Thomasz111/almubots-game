@@ -11,8 +11,6 @@ import ktx.app.KtxScreen
 import ktx.inject.Context
 
 class Game : KtxGame<KtxScreen>() {
-    val batch by lazy { SpriteBatch() }
-    val font by lazy { BitmapFont() }
     private val context = Context()
 
     override fun create() {
