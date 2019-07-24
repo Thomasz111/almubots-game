@@ -9,6 +9,8 @@ import com.mygdx.game.physics.CirclePhysics
 class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private val physics: CirclePhysics){
     var speed = Vector2(0f, 0f)
     var previousPosition = Vector2(0f, 0f)
+    private var collided = false
+    private var newSpeed = Vector2(0f, 0f)
 
     fun draw(batch: Batch){
         batch.draw(botImage, hitBox.x - hitBox.radius, hitBox.y - hitBox.radius, hitBox.radius * 2, hitBox.radius * 2)
@@ -29,16 +31,19 @@ class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private v
     }
 
     fun manageCollisionWith(almuBotOther: AlmuBotSimple) {
-        physics.setIncidentalSpeed(this, almuBotOther)
-        hitBox.x = previousPosition.x
-        hitBox.y = previousPosition.y
-        almuBotOther.hitBox.x = almuBotOther.previousPosition.x
-        almuBotOther.hitBox.y = almuBotOther.previousPosition.y
+        collided = true
+        newSpeed = physics.getIncidentalSpeed(hitBox, speed, almuBotOther.hitBox, almuBotOther.speed)
     }
 
     fun update(delta: Float) {
+        if (collided) {
+            collided = false
+            hitBox.x = previousPosition.x
+            hitBox.y = previousPosition.y
+        }
         previousPosition.x = hitBox.x
         previousPosition.y = hitBox.y
+        speed = newSpeed
         hitBox.x += speed.x * delta
         hitBox.y += speed.y * delta
     }

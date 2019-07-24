@@ -22,6 +22,7 @@ class GameScreen(private val batch: Batch,
     private val botImage = Texture(Gdx.files.internal("$path/bot.png"))
     private val almuBotCircle = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 40f, 32f), botImage, physics)
     private val almuBotDummy = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 200f, 32f), botImage, physics)
+    private val almuBotDummy2 = AlmuBotSimple(Circle(Constants.screenWidth.toFloat() / 2f - 64f / 2f, 400f, 32f), botImage, physics)
 
     override fun render(delta: Float) {
         // generally good practice to update the camera's matrices once per frame
@@ -40,6 +41,7 @@ class GameScreen(private val batch: Batch,
 
             almuBotCircle.draw(it)
             almuBotDummy.draw(it)
+            almuBotDummy2.draw(it)
         }
 
         // process user input
@@ -72,6 +74,21 @@ class GameScreen(private val batch: Batch,
         if (almuBotCircle.collisionOccurredWith(almuBotDummy.hitBox)) {
             almuBotCircle.manageCollisionWith(almuBotDummy)
         }
+        if (almuBotCircle.collisionOccurredWith(almuBotDummy2.hitBox)) {
+            almuBotCircle.manageCollisionWith(almuBotDummy2)
+        }
+        if (almuBotDummy.collisionOccurredWith(almuBotDummy2.hitBox)) {
+            almuBotDummy.manageCollisionWith(almuBotDummy2)
+        }
+        if (almuBotDummy.collisionOccurredWith(almuBotCircle.hitBox)) {
+            almuBotDummy.manageCollisionWith(almuBotCircle)
+        }
+        if (almuBotDummy2.collisionOccurredWith(almuBotDummy.hitBox)) {
+            almuBotDummy2.manageCollisionWith(almuBotDummy)
+        }
+        if (almuBotDummy2.collisionOccurredWith(almuBotCircle.hitBox)) {
+            almuBotDummy2.manageCollisionWith(almuBotCircle)
+        }
 
         // check if bot is in bounds
         if (almuBotCircle.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
@@ -82,9 +99,13 @@ class GameScreen(private val batch: Batch,
         if (almuBotDummy.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
             almuBotDummy.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
         }
+        if (almuBotDummy2.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
+            almuBotDummy2.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
+        }
 
         almuBotCircle.update(delta)
         almuBotDummy.update(delta)
+        almuBotDummy2.update(delta)
     }
 
     override fun dispose() {

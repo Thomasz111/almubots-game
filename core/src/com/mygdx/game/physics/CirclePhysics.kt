@@ -2,7 +2,6 @@ package com.mygdx.game.physics
 
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.gameobjects.AlmuBotSimple
 
 interface CirclePhysics {
 
@@ -32,5 +31,5 @@ interface CirclePhysics {
         return hitBox1.overlaps(hitBox2)
     }
 
-    fun setIncidentalSpeed(almuBot1: AlmuBotSimple, almuBot2: AlmuBotSimple)
+    fun getIncidentalSpeed(hitBox1: Circle, speed1: Vector2, hitBox2: Circle, speed2: Vector2): Vector2
 }
