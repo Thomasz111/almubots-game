@@ -8,12 +8,18 @@ import com.mygdx.game.physics.CirclePhysics
 
 class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private val physics: CirclePhysics){
     var speed = Vector2(0f, 0f)
-    var previousPosition = Vector2(0f, 0f)
+    private var previousPosition = Vector2(0f, 0f)
     private var collided = false
     private var newSpeed = Vector2(0f, 0f)
 
     fun draw(batch: Batch){
-        batch.draw(botImage, hitBox.x - hitBox.radius, hitBox.y - hitBox.radius, hitBox.radius * 2, hitBox.radius * 2)
+        batch.draw(
+            botImage,
+            hitBox.x - hitBox.radius,
+            hitBox.y - hitBox.radius,
+            hitBox.radius * 2,
+            hitBox.radius * 2
+        )
     }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {
