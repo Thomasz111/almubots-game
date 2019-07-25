@@ -1,30 +1,50 @@
 package com.mygdx.game.screen
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.mygdx.game.Game
-import com.mygdx.game.utils.Constants
+import com.mygdx.game.physics.CirclePhysicsHeavy
+import com.mygdx.game.physics.CirclePhysicsMomentum
+import com.mygdx.game.physics.CirclePhysicsSimple
 import ktx.app.KtxScreen
+import ktx.graphics.use
 
-class MainMenuScreen(val game: Game) : KtxScreen {
-    private val camera = OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) }
-
+class MainMenuScreen(private val game: Game,
+                     private val batch: Batch,
+                     private val font: BitmapFont,
+                     private val camera: OrthographicCamera) : KtxScreen {
     override fun render(delta: Float) {
         camera.update()
-        game.batch.projectionMatrix = camera.combined
+        batch.projectionMatrix = camera.combined
 
-        game.batch.begin()
-        game.font.draw(game.batch, "Welcome to ALMUBOTS!!! ", 100f, 150f)
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100f, 100f)
-        game.batch.end()
+        batch.use {
+            font.draw(it, "Welcome to ALMUBOTS!!! ", 100f, 150f)
+            font.draw(it, "press 1 to test simple physics", 100f, 110f)
+            font.draw(it, "press 2 to test simpler physics", 100f, 70f)
+            font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
+        }
 
-        if (Gdx.input.isTouched) {
-//            game.addScreen(GameScreen(game))
-//            game.setScreen<GameScreen>()
-//            game.removeScreen<MainMenuScreen>()
-            game.batch.begin()
-            game.font.draw(game.batch, "AAAAAAAAAAA", 100f, 200f)
-            game.batch.end()
+        val numOfBots = 5
+
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsHeavy(), numOfBots))
+            game.setScreen<GameScreen>()
+            game.removeScreen<MainMenuScreen>()
+            dispose()
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsSimple(), numOfBots))
+            game.setScreen<GameScreen>()
+            game.removeScreen<MainMenuScreen>()
+            dispose()
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+            game.addScreen(GameScreen(batch, font, camera, CirclePhysicsMomentum(), numOfBots))
+            game.setScreen<GameScreen>()
+            game.removeScreen<MainMenuScreen>()
             dispose()
         }
     }

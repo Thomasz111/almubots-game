@@ -1,24 +1,35 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.mygdx.game.screen.MainMenuScreen
+import com.mygdx.game.utils.Constants
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
+import ktx.inject.Context
 
 class Game : KtxGame<KtxScreen>() {
-    val batch by lazy { SpriteBatch() }
-    val font by lazy { BitmapFont() }
+    private val context = Context()
 
     override fun create() {
-        addScreen(MainMenuScreen(this))
+        context.register {
+            bindSingleton(this@Game)
+            bindSingleton<Batch>(SpriteBatch())
+            bindSingleton(BitmapFont())
+            // The camera ensures we can render using our target resolution of 800x480
+            //    pixels no matter what the screen resolution is.
+            bindSingleton(OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) })
+
+            addScreen(MainMenuScreen(inject(), inject(), inject(), inject()))
+        }
         setScreen<MainMenuScreen>()
         super.create()
     }
 
     override fun dispose() {
-        batch.dispose()
-        font.dispose()
+        context.dispose()
         super.dispose()
     }
 }
