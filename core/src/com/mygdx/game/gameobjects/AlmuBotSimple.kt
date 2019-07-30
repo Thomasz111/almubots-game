@@ -6,7 +6,11 @@ import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.physics.CirclePhysics
 
-class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private val physics: CirclePhysics){
+class AlmuBotSimple(val botId: Int,
+                    val hitBox: Circle,
+                    private val botImage: Texture,
+                    private val physics: CirclePhysics,
+                    private val gun: Gun){
     var speed = Vector2(0f, 0f)
     private var previousPosition = Vector2(0f, 0f)
     private var collided = false
@@ -20,6 +24,7 @@ class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private v
             hitBox.radius * 2,
             hitBox.radius * 2
         )
+        gun.draw(batch, hitBox.x, hitBox.y, hitBox.radius * 1.5f, hitBox.radius * 0.5f)
     }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {
@@ -41,6 +46,10 @@ class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private v
         newSpeed = physics.getIncidentalSpeed(hitBox, speed, almuBotOther.hitBox, almuBotOther.speed)
     }
 
+    fun testGun(){
+        gun.rotation += 10
+    }
+
     fun update(delta: Float) {
         if (collided) {
             collided = false
@@ -52,5 +61,7 @@ class AlmuBotSimple(val hitBox: Circle, private val botImage: Texture, private v
         speed = newSpeed
         hitBox.x += speed.x * delta
         hitBox.y += speed.y * delta
+
+        gun.update()
     }
 }

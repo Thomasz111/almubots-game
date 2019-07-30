@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.mygdx.game.gameobjects.AlmuBotSimple
+import com.mygdx.game.gameobjects.Gun
 import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
@@ -23,13 +24,14 @@ class GameScreen(
 ) : KtxScreen {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$texturesPath/bot.png"))
+    private val gunImage = Texture(Gdx.files.internal("$texturesPath/test.png"))
     private val bots = Array(botsNum) { botNum ->
         val hitBox = Circle(
             Constants.screenWidth.toFloat() / 2f - 64f / 2f,
             (botNum + 1) * 70f,
             32f
         )
-        AlmuBotSimple(hitBox, botImage, physics)
+        AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage))
     }
 
     override fun render(delta: Float) {
@@ -67,6 +69,9 @@ class GameScreen(
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 bots[0].speed.y -= 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.V)) {
+                bots[0].testGun()
             }
         }
         if (bots.size >= 2) {
