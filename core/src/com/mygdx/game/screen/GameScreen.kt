@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.mygdx.game.communication.CleanCommand
+import com.mygdx.game.communication.GameStatus
 import com.mygdx.game.communication.Synchronizer
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Gun
@@ -101,12 +102,14 @@ class GameScreen(
             }
         }
 
+        // API
         cmds.forEach { dirtyCmd ->
             val cmd = CleanCommand(dirtyCmd)
             val bot = bots[cmd.botNo]
             bot.speed.x += 10 * cmd.dx
             bot.speed.y += 10 * cmd.dy
             if (cmd.shoot) {
+                bot.shoot = true
                 bot.testShooting()
             }
             bot.rotateGun(cmd.rotation)
@@ -135,6 +138,16 @@ class GameScreen(
 
         bots.forEach { bot -> bot.update(delta) }
         bulletsManager.updateBullets(delta)
+
+        generateResponse()
+        bots.forEach { it.shoot = false }
+    }
+
+    private fun generateResponse() {
+        val botsStatus = bots.map { bot ->
+            GameStatus.BotStatus(bot.hitBox.x, bot.hitBox.y, bot.shoot)
+        }
+        Synchronizer.gameStatus = GameStatus(botsStatus)
 
         Synchronizer.timestamp = Calendar.getInstance().time
     }

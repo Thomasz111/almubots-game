@@ -6,6 +6,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -33,7 +34,7 @@ class Server {
                     val post = call.receive<Command>()
                     Synchronizer.cmds.add(post)
                     while (now > Synchronizer.timestamp) {}
-                    call.respondText("", ContentType.Text.Html)
+                    call.respond(Synchronizer.gameStatus)
                 }
             }
         }.start()

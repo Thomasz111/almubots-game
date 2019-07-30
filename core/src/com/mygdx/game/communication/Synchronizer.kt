@@ -7,4 +7,6 @@ object Synchronizer {
     var timestamp: Date = Calendar.getInstance().time
     @Volatile
     var cmds = mutableListOf<Command>()
+    @Volatile
+    var gameStatus = GameStatus(listOf())
 }

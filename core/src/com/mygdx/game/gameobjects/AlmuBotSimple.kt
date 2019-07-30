@@ -12,6 +12,7 @@ class AlmuBotSimple(val botId: Int,
                     private val physics: CirclePhysics,
                     private val gun: Gun){
     var speed = Vector2(0f, 0f)
+    var shoot = false
     private var previousPosition = Vector2(0f, 0f)
     private var collided = false
     private var newSpeed = Vector2(0f, 0f)
