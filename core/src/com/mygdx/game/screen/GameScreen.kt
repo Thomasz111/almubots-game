@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
+import com.mygdx.game.communication.CleanCommand
+import com.mygdx.game.communication.GameStatus
+import com.mygdx.game.communication.Synchronizer
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Gun
 import com.mygdx.game.managers.BulletsManager
@@ -15,6 +18,7 @@ import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.nio.file.Paths
+import java.util.*
 
 class GameScreen(
     private val batch: Batch,
@@ -42,6 +46,8 @@ class GameScreen(
 
         // tell the SpriteBatch to render in the coordinate system specified by the camera.
         batch.projectionMatrix = camera.combined
+
+        val cmds = Synchronizer.cmds
 
         // begin a new batch and draw the almuBot
         batch.use {
@@ -75,7 +81,7 @@ class GameScreen(
                 bots[0].speed.y -= 10
             }
             if (Gdx.input.isKeyPressed(Input.Keys.V)) {
-                bots[0].testGunRotation()
+                bots[0].rotateGun(1)
             }
             if (Gdx.input.isKeyPressed(Input.Keys.B)) {
                 bots[0].testShooting()
@@ -95,6 +101,20 @@ class GameScreen(
                 bots[1].speed.y -= 10
             }
         }
+
+        // API
+        cmds.forEach { dirtyCmd ->
+            val cmd = CleanCommand(dirtyCmd)
+            val bot = bots[cmd.botNo]
+            bot.speed.x += 10 * cmd.dx
+            bot.speed.y += 10 * cmd.dy
+            if (cmd.shoot) {
+                bot.shoot = true
+                bot.testShooting()
+            }
+            bot.rotateGun(cmd.rotation)
+        }
+        cmds.clear()
 
         // check for collisions with other bots
         for (bot1 in bots) {
@@ -118,6 +138,18 @@ class GameScreen(
 
         bots.forEach { bot -> bot.update(delta) }
         bulletsManager.updateBullets(delta)
+
+        generateResponse()
+        bots.forEach { it.shoot = false }
+    }
+
+    private fun generateResponse() {
+        val botsStatus = bots.map { bot ->
+            GameStatus.BotStatus(bot.hitBox.x, bot.hitBox.y, bot.shoot)
+        }
+        Synchronizer.gameStatus = GameStatus(botsStatus)
+
+        Synchronizer.timestamp = Calendar.getInstance().time
     }
 
     override fun dispose() {
