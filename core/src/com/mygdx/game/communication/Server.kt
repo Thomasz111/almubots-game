@@ -14,7 +14,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import java.util.*
 
-class Comm {
+class Server {
     fun start() {
         embeddedServer(Netty, 8080) {
             install(ContentNegotiation) {
