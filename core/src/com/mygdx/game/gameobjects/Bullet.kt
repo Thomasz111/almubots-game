@@ -35,7 +35,7 @@ class Bullet(val botId: Int,
     }
 
     fun collisionOccurredWith(hitBoxOther: Circle): Boolean {
-        return physics.collisionOccured(hitBox, hitBoxOther)
+        return physics.collisionOccurred(hitBox, hitBoxOther)
     }
 
     fun manageCollisionWith(almuBotOther: AlmuBotSimple) {
