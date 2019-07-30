@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
+import com.mygdx.game.communication.Synchronizer
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Gun
 import com.mygdx.game.managers.BulletsManager
@@ -15,6 +16,7 @@ import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.nio.file.Paths
+import java.util.*
 
 class GameScreen(
     private val batch: Batch,
@@ -42,6 +44,8 @@ class GameScreen(
 
         // tell the SpriteBatch to render in the coordinate system specified by the camera.
         batch.projectionMatrix = camera.combined
+
+        val cmds = Synchronizer.cmds
 
         // begin a new batch and draw the almuBot
         batch.use {
@@ -96,6 +100,12 @@ class GameScreen(
             }
         }
 
+        cmds.forEach { cmd ->
+            bots[cmd.botNo].speed.x += 10 * cmd.dx  // TODO limit to [-1, 0, 1]
+            bots[cmd.botNo].speed.y += 10 * cmd.dy
+        }
+        cmds.clear()
+
         // check for collisions with other bots
         for (bot1 in bots) {
             for (bot2 in bots) {
@@ -118,6 +128,8 @@ class GameScreen(
 
         bots.forEach { bot -> bot.update(delta) }
         bulletsManager.updateBullets(delta)
+
+        Synchronizer.timestamp = Calendar.getInstance().time
     }
 
     override fun dispose() {
