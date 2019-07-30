@@ -24,7 +24,7 @@ class AlmuBotSimple(val botId: Int,
             hitBox.radius * 2,
             hitBox.radius * 2
         )
-        gun.draw(batch, hitBox.x, hitBox.y, hitBox.radius * 1.5f, hitBox.radius * 0.5f)
+        gun.draw(batch, hitBox.x, hitBox.y)
     }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {

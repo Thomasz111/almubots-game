@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Gun
+import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
@@ -19,6 +20,7 @@ class GameScreen(
     private val batch: Batch,
     private val font: BitmapFont,
     private val camera: OrthographicCamera,
+    private val bulletsManager: BulletsManager,
     private val physics: CirclePhysics,
     private val botsNum: Int
 ) : KtxScreen {
@@ -31,7 +33,7 @@ class GameScreen(
             (botNum + 1) * 70f,
             32f
         )
-        AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage))
+        AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager,hitBox.radius * 1.5f, hitBox.radius * 0.5f))
     }
 
     override fun render(delta: Float) {
