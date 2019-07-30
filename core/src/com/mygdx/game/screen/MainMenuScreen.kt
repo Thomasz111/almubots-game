@@ -29,7 +29,7 @@ class MainMenuScreen(private val game: Game,
             font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
         }
 
-        val numOfBots = 5
+        val numOfBots = 2
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
             game.addScreen(GameScreen(batch, font, camera, bulletsManager, CirclePhysicsHeavy(), numOfBots))

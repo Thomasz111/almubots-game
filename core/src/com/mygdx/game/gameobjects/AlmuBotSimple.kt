@@ -24,7 +24,7 @@ class AlmuBotSimple(val botId: Int,
             hitBox.radius * 2,
             hitBox.radius * 2
         )
-        gun.draw(batch, hitBox.x, hitBox.y)
+        gun.draw(batch, this)
     }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {
@@ -46,8 +46,17 @@ class AlmuBotSimple(val botId: Int,
         newSpeed = physics.getIncidentalSpeed(hitBox, speed, almuBotOther.hitBox, almuBotOther.speed)
     }
 
-    fun testGun(){
+    fun manageCollisionWith(bullet: Bullet) {
+        if(bullet.botId != botId)
+            println(botId.toString() + " hit by " + bullet.botId)
+    }
+
+    fun testGunRotation(){
         gun.rotation += 10
+    }
+
+    fun testShooting() {
+        gun.shoot(this)
     }
 
     fun update(delta: Float) {

@@ -56,6 +56,8 @@ class GameScreen(
             }
 
             bots.forEach { bot -> bot.draw(it) }
+
+            bulletsManager.drawBullets(it)
         }
 
         // process user input
@@ -73,7 +75,10 @@ class GameScreen(
                 bots[0].speed.y -= 10
             }
             if (Gdx.input.isKeyPressed(Input.Keys.V)) {
-                bots[0].testGun()
+                bots[0].testGunRotation()
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+                bots[0].testShooting()
             }
         }
         if (bots.size >= 2) {
@@ -101,6 +106,7 @@ class GameScreen(
                 }
             }
         }
+        bulletsManager.manageCollisionsWithBots(com.badlogic.gdx.utils.Array(bots))
 
         // wall collisions
         bots.forEach { bot ->
@@ -108,8 +114,10 @@ class GameScreen(
                 bot.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
             }
         }
+        bulletsManager.manageCollisionsWithWalls()
 
         bots.forEach { bot -> bot.update(delta) }
+        bulletsManager.updateBullets(delta)
     }
 
     override fun dispose() {
