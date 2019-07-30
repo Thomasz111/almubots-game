@@ -51,8 +51,8 @@ class AlmuBotSimple(val botId: Int,
             println(botId.toString() + " hit by " + bullet.botId)
     }
 
-    fun testGunRotation(){
-        gun.rotation += 10
+    fun rotateGun(dir: Int) {
+        gun.rotation += 10 * dir
     }
 
     fun testShooting() {

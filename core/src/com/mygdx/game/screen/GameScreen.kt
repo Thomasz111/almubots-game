@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
+import com.mygdx.game.communication.CleanCommand
 import com.mygdx.game.communication.Synchronizer
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Gun
@@ -79,7 +80,7 @@ class GameScreen(
                 bots[0].speed.y -= 10
             }
             if (Gdx.input.isKeyPressed(Input.Keys.V)) {
-                bots[0].testGunRotation()
+                bots[0].rotateGun(1)
             }
             if (Gdx.input.isKeyPressed(Input.Keys.B)) {
                 bots[0].testShooting()
@@ -100,9 +101,15 @@ class GameScreen(
             }
         }
 
-        cmds.forEach { cmd ->
-            bots[cmd.botNo].speed.x += 10 * cmd.dx  // TODO limit to [-1, 0, 1]
-            bots[cmd.botNo].speed.y += 10 * cmd.dy
+        cmds.forEach { dirtyCmd ->
+            val cmd = CleanCommand(dirtyCmd)
+            val bot = bots[cmd.botNo]
+            bot.speed.x += 10 * cmd.dx
+            bot.speed.y += 10 * cmd.dy
+            if (cmd.shoot) {
+                bot.testShooting()
+            }
+            bot.rotateGun(cmd.rotation)
         }
         cmds.clear()
 
