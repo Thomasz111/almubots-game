@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
 import com.mygdx.game.gameobjects.AlmuBotSimple
+import com.mygdx.game.gameobjects.Gun
+import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxScreen
@@ -18,18 +20,20 @@ class GameScreen(
     private val batch: Batch,
     private val font: BitmapFont,
     private val camera: OrthographicCamera,
+    private val bulletsManager: BulletsManager,
     private val physics: CirclePhysics,
     private val botsNum: Int
 ) : KtxScreen {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
     private val botImage = Texture(Gdx.files.internal("$texturesPath/bot.png"))
+    private val gunImage = Texture(Gdx.files.internal("$texturesPath/test.png"))
     private val bots = Array(botsNum) { botNum ->
         val hitBox = Circle(
             Constants.screenWidth.toFloat() / 2f - 64f / 2f,
             (botNum + 1) * 70f,
             32f
         )
-        AlmuBotSimple(hitBox, botImage, physics)
+        AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager,hitBox.radius * 1.5f, hitBox.radius * 0.5f))
     }
 
     override fun render(delta: Float) {
@@ -52,6 +56,8 @@ class GameScreen(
             }
 
             bots.forEach { bot -> bot.draw(it) }
+
+            bulletsManager.drawBullets(it)
         }
 
         // process user input
@@ -67,6 +73,12 @@ class GameScreen(
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 bots[0].speed.y -= 10
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.V)) {
+                bots[0].testGunRotation()
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+                bots[0].testShooting()
             }
         }
         if (bots.size >= 2) {
@@ -94,6 +106,7 @@ class GameScreen(
                 }
             }
         }
+        bulletsManager.manageCollisionsWithBots(com.badlogic.gdx.utils.Array(bots))
 
         // wall collisions
         bots.forEach { bot ->
@@ -101,8 +114,10 @@ class GameScreen(
                 bot.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
             }
         }
+        bulletsManager.manageCollisionsWithWalls()
 
         bots.forEach { bot -> bot.update(delta) }
+        bulletsManager.updateBullets(delta)
     }
 
     override fun dispose() {

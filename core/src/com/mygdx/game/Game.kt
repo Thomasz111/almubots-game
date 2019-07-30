@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.screen.MainMenuScreen
 import com.mygdx.game.utils.Constants
 import ktx.app.KtxGame
@@ -21,8 +22,9 @@ class Game : KtxGame<KtxScreen>() {
             // The camera ensures we can render using our target resolution of 800x480
             //    pixels no matter what the screen resolution is.
             bindSingleton(OrthographicCamera().apply { setToOrtho(false, Constants.screenWidth.toFloat(), Constants.screenHeight.toFloat()) })
+            bindSingleton(BulletsManager())
 
-            addScreen(MainMenuScreen(inject(), inject(), inject(), inject()))
+            addScreen(MainMenuScreen(inject(), inject(), inject(), inject(), inject()))
         }
         setScreen<MainMenuScreen>()
         super.create()
