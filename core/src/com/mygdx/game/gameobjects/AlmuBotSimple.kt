@@ -15,6 +15,7 @@ class AlmuBotSimple(val botId: Int,
     private var previousPosition = Vector2(0f, 0f)
     private var collided = false
     private var newSpeed = Vector2(0f, 0f)
+    private var positionAfterCollision = Vector2(0f, 0f)
 
     fun draw(batch: Batch){
         batch.draw(
@@ -33,17 +34,16 @@ class AlmuBotSimple(val botId: Int,
 
     fun putBotBackToBounds(screenWidth: Int, screenHeight: Int) {
         physics.putBotBackToBounds(hitBox, speed, screenWidth, screenHeight)
-        hitBox.x = previousPosition.x
-        hitBox.y = previousPosition.y
     }
 
     fun collisionOccurredWith(hitBoxOther: Circle): Boolean {
-        return physics.collisionOccured(hitBox, hitBoxOther)
+        return physics.collisionOccurred(hitBox, hitBoxOther)
     }
 
     fun manageCollisionWith(almuBotOther: AlmuBotSimple) {
         collided = true
         newSpeed = physics.getIncidentalSpeed(hitBox, speed, almuBotOther.hitBox, almuBotOther.speed)
+        positionAfterCollision = physics.getPositionAfterCollision(hitBox, almuBotOther.hitBox)
     }
 
     fun manageCollisionWith(bullet: Bullet) {
@@ -62,8 +62,8 @@ class AlmuBotSimple(val botId: Int,
     fun update(delta: Float) {
         if (collided) {
             collided = false
-            hitBox.x = previousPosition.x
-            hitBox.y = previousPosition.y
+            hitBox.x = positionAfterCollision.x
+            hitBox.y = positionAfterCollision.y
         }
         previousPosition.x = hitBox.x
         previousPosition.y = hitBox.y
