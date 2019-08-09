@@ -6,10 +6,14 @@ import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.physics.CirclePhysics
 import kotlin.math.max
+import kotlin.math.min
 
 const val START_LIFE = 20
+const val START_AMMO = 10
 const val RESPAWN_TIME = 5.0
 const val SHOOT_COOLDOWN = 0.25
+const val RELOAD_TIME = SHOOT_COOLDOWN * 4
+const val LITTLE_NEG = -0.001
 
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
@@ -22,8 +26,11 @@ class AlmuBotSimple(val botId: Int,
         private set
     var dead = false
         private set
+    var ammo = START_AMMO
+        private set
     private var respawnCounter = 0.0
-    private var cooldownCounter = -0.001
+    private var cooldownCounter = LITTLE_NEG
+    private var reloadCounter = LITTLE_NEG
     private var previousPosition = Vector2(0f, 0f)
     private var collided = false
     private var newSpeed = Vector2(0f, 0f)
@@ -73,7 +80,7 @@ class AlmuBotSimple(val botId: Int,
         }
     }
 
-    fun manageRespawn(delta: Float) {   // TODO rename
+    fun manageRespawn(delta: Float) {
         if (!dead) return
         respawnCounter += delta
 
@@ -89,8 +96,11 @@ class AlmuBotSimple(val botId: Int,
     }
 
     fun testShooting() {
-        if (cooldownCounter < 0.0) {
+        if (cooldownCounter < 0.0 && ammo > 0) {
+            shoot = true
+            ammo -= 1
             cooldownCounter = SHOOT_COOLDOWN
+            reloadCounter = RELOAD_TIME
             gun.shoot(this)
         }
     }
@@ -99,7 +109,13 @@ class AlmuBotSimple(val botId: Int,
         if (dead) return
 
         if (cooldownCounter > 0.0) {
-            cooldownCounter = max(cooldownCounter - delta, -0.001)
+            cooldownCounter = max(cooldownCounter - delta, LITTLE_NEG)
+        }
+
+        reloadCounter = max(reloadCounter - delta, LITTLE_NEG)
+        if (reloadCounter < 0.0) {
+            ammo = min(ammo + 1, START_AMMO)
+            reloadCounter = RELOAD_TIME
         }
 
         if (collided) {

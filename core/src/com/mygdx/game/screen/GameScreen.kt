@@ -58,12 +58,14 @@ class GameScreen(
                 font.draw(it, "bot1 Y speed: " + bots[0].speed.y, 0f, 480f)
                 font.draw(it, "bot1 X speed: " + bots[0].speed.x, 0f, 460f)
                 font.draw(it, "bot1 life: ${bots[0].life}", 0f, 440f)
+                font.draw(it, "bot1 ammo: ${bots[0].ammo}", 0f, 420f)
             }
 
             if (bots.size >= 2) {
-                font.draw(it, "bot2 Y speed: " + bots[1].speed.y, 0f, 420f)
-                font.draw(it, "bot2 X speed: " + bots[1].speed.x, 0f, 400f)
-                font.draw(it, "bot2 life: ${bots[1].life}", 0f, 380f)
+                font.draw(it, "bot2 Y speed: " + bots[1].speed.y, 0f, 400f)
+                font.draw(it, "bot2 X speed: " + bots[1].speed.x, 0f, 380f)
+                font.draw(it, "bot2 life: ${bots[1].life}", 0f, 360f)
+                font.draw(it, "bot2 ammo: ${bots[1].ammo}", 0f, 340f)
             }
 
             bots.forEach { bot -> bot.draw(it) }
@@ -115,7 +117,6 @@ class GameScreen(
                 bot.speed.x += 10 * cmd.dx
                 bot.speed.y += 10 * cmd.dy
                 if (cmd.shoot) {
-                    bot.shoot = true
                     bot.testShooting()
                 }
                 bot.rotateGun(cmd.rotation)
