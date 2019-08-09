@@ -6,19 +6,28 @@ import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.physics.CirclePhysics
 
+const val START_LIFE = 20
+const val RESPAWN_TIME = 5.0
+
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
                     private val botImage: Texture,
                     private val physics: CirclePhysics,
-                    private val gun: Gun){
+                    private val gun: Gun) {
     var speed = Vector2(0f, 0f)
     var shoot = false
+    var life = START_LIFE
+        private set
+    var dead = false
+        private set
+    private var respawnCounter = 0.0
     private var previousPosition = Vector2(0f, 0f)
     private var collided = false
     private var newSpeed = Vector2(0f, 0f)
     private var positionAfterCollision = Vector2(0f, 0f)
 
-    fun draw(batch: Batch){
+    fun draw(batch: Batch) {
+        if (dead) return
         batch.draw(
             botImage,
             hitBox.x - hitBox.radius,
@@ -42,14 +51,34 @@ class AlmuBotSimple(val botId: Int,
     }
 
     fun manageCollisionWith(almuBotOther: AlmuBotSimple) {
+        if (dead || almuBotOther.dead) return
         collided = true
         newSpeed = physics.getIncidentalSpeed(hitBox, speed, almuBotOther.hitBox, almuBotOther.speed)
         positionAfterCollision = physics.getPositionAfterCollision(hitBox, almuBotOther.hitBox)
     }
 
     fun manageCollisionWith(bullet: Bullet) {
-        if(bullet.botId != botId)
+        if(bullet.botId != botId) {
             println(botId.toString() + " hit by " + bullet.botId)
+            life -= 1
+
+            if (life == 0) {
+                dead = true
+                speed = Vector2(0f, 0f)
+                newSpeed = Vector2(0f, 0f)
+            }
+        }
+    }
+
+    fun manageRespawn(delta: Float) {   // TODO rename
+        if (!dead) return
+        respawnCounter += delta
+
+        if (respawnCounter >= RESPAWN_TIME) {
+            dead = false
+            respawnCounter = 0.0
+            life = START_LIFE
+        }
     }
 
     fun rotateGun(dir: Int) {
@@ -61,6 +90,7 @@ class AlmuBotSimple(val botId: Int,
     }
 
     fun update(delta: Float) {
+        if (dead) return
         if (collided) {
             collided = false
             hitBox.x = positionAfterCollision.x

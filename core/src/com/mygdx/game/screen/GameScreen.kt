@@ -47,6 +47,9 @@ class GameScreen(
         // tell the SpriteBatch to render in the coordinate system specified by the camera.
         batch.projectionMatrix = camera.combined
 
+        // Respawn
+        bots.forEach { it.manageRespawn(delta) }
+
         val cmds = Synchronizer.cmds
 
         // begin a new batch and draw the almuBot
@@ -54,11 +57,13 @@ class GameScreen(
             if (bots.isNotEmpty()) {
                 font.draw(it, "bot1 Y speed: " + bots[0].speed.y, 0f, 480f)
                 font.draw(it, "bot1 X speed: " + bots[0].speed.x, 0f, 460f)
+                font.draw(it, "bot1 life: ${bots[0].life}", 0f, 440f)
             }
 
             if (bots.size >= 2) {
-                font.draw(it, "bot2 Y speed: " + bots[1].speed.y, 0f, 440f)
-                font.draw(it, "bot2 X speed: " + bots[1].speed.x, 0f, 420f)
+                font.draw(it, "bot2 Y speed: " + bots[1].speed.y, 0f, 420f)
+                font.draw(it, "bot2 X speed: " + bots[1].speed.x, 0f, 400f)
+                font.draw(it, "bot2 life: ${bots[1].life}", 0f, 380f)
             }
 
             bots.forEach { bot -> bot.draw(it) }
@@ -67,7 +72,7 @@ class GameScreen(
         }
 
         // process user input
-        if (bots.isNotEmpty()) {
+        if (bots.isNotEmpty() && !bots[0].dead) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 bots[0].speed.x -= 10
             }
@@ -87,7 +92,7 @@ class GameScreen(
                 bots[0].testShooting()
             }
         }
-        if (bots.size >= 2) {
+        if (bots.size >= 2 && !bots[1].dead) {
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                 bots[1].speed.x -= 10
             }
@@ -106,13 +111,15 @@ class GameScreen(
         cmds.forEach { dirtyCmd ->
             val cmd = CleanCommand(dirtyCmd)
             val bot = bots[cmd.botNo]
-            bot.speed.x += 10 * cmd.dx
-            bot.speed.y += 10 * cmd.dy
-            if (cmd.shoot) {
-                bot.shoot = true
-                bot.testShooting()
+            if (!bot.dead) {
+                bot.speed.x += 10 * cmd.dx
+                bot.speed.y += 10 * cmd.dy
+                if (cmd.shoot) {
+                    bot.shoot = true
+                    bot.testShooting()
+                }
+                bot.rotateGun(cmd.rotation)
             }
-            bot.rotateGun(cmd.rotation)
         }
         cmds.clear()
 
@@ -130,7 +137,7 @@ class GameScreen(
 
         // wall collisions
         bots.forEach { bot ->
-            if (bot.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
+            if (!bot.dead && bot.outOfBounds(Constants.screenWidth, Constants.screenHeight)) {
                 bot.putBotBackToBounds(Constants.screenWidth, Constants.screenHeight)
             }
         }
@@ -145,7 +152,7 @@ class GameScreen(
 
     private fun generateResponse() {
         val botsStatus = bots.map { bot ->
-            GameStatus.BotStatus(bot.hitBox.x, bot.hitBox.y, bot.shoot)
+            GameStatus.BotStatus(bot.hitBox.x, bot.hitBox.y, bot.life, bot.shoot)
         }
         Synchronizer.gameStatus = GameStatus(botsStatus)
 
