@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.gameobjects.Bullet
 import com.badlogic.gdx.utils.Array
 import com.mygdx.game.gameobjects.AlmuBotSimple
+import com.mygdx.game.gameobjects.Bullet
 import com.mygdx.game.physics.CirclePhysicsSimple
 import com.mygdx.game.utils.Constants
 import java.nio.file.Paths
@@ -45,10 +45,12 @@ class BulletsManager {
 
     fun manageCollisionsWithBots(bots: Array<AlmuBotSimple>) {
         bots.forEach { bot ->
-            bulletsOnScreen.forEach { bullet ->
-                if (bullet.collisionOccurredWith(bot.hitBox)) {
-                    bot.manageCollisionWith(bullet)
-                    destroyBullet(bullet)
+            if (!bot.dead) {
+                bulletsOnScreen.forEach { bullet ->
+                    if (bullet.collisionOccurredWith(bot.hitBox)) {
+                        bot.manageCollisionWith(bullet)
+                        destroyBullet(bullet)
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.mygdx.game.Game
+import com.mygdx.game.managers.BotsManager
 import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.physics.CirclePhysicsHeavy
 import com.mygdx.game.physics.CirclePhysicsMomentum
@@ -17,6 +18,7 @@ class MainMenuScreen(private val game: Game,
                      private val batch: Batch,
                      private val font: BitmapFont,
                      private val camera: OrthographicCamera,
+                     private val botsManager: BotsManager,
                      private val bulletsManager: BulletsManager) : KtxScreen {
     override fun render(delta: Float) {
         camera.update()
@@ -32,19 +34,25 @@ class MainMenuScreen(private val game: Game,
         val numOfBots = 2
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-            game.addScreen(GameScreen(batch, font, camera, bulletsManager, CirclePhysicsHeavy(), numOfBots))
+            val physics = CirclePhysicsHeavy()
+            botsManager.initBots(numOfBots, physics, bulletsManager)
+            game.addScreen(GameScreen(batch, font, camera, botsManager, bulletsManager))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            game.addScreen(GameScreen(batch, font, camera, bulletsManager, CirclePhysicsSimple(), numOfBots))
+            val physics = CirclePhysicsSimple()
+            botsManager.initBots(numOfBots, physics, bulletsManager)
+            game.addScreen(GameScreen(batch, font, camera, botsManager, bulletsManager))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
         }
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-            game.addScreen(GameScreen(batch, font, camera, bulletsManager, CirclePhysicsMomentum(), numOfBots))
+            val physics = CirclePhysicsMomentum()
+            botsManager.initBots(numOfBots, physics, bulletsManager)
+            game.addScreen(GameScreen(batch, font, camera, botsManager, bulletsManager))
             game.setScreen<GameScreen>()
             game.removeScreen<MainMenuScreen>()
             dispose()
