@@ -19,7 +19,7 @@ class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
                     private val botImage: Texture,
                     private val physics: CirclePhysics,
-                    private val gun: Gun) {
+                    val gun: Gun) {
     var speed = Vector2(0f, 0f)
     var shoot = false
     var life = START_LIFE
