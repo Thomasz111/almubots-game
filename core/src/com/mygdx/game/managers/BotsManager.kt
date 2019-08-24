@@ -18,8 +18,6 @@ import java.util.*
 
 class BotsManager {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
-    private val botImage = Texture(Gdx.files.internal("$texturesPath/bot.png"))
-    private val gunImage = Texture(Gdx.files.internal("$texturesPath/test.png"))
     var bots = emptyArray<AlmuBotSimple>()
         private set
     private val botRadius = 32f
@@ -31,6 +29,8 @@ class BotsManager {
                     botRadius + Random().nextInt(Constants.screenHeight - botRadius.toInt()),
                     botRadius
             )
+            val botImage = Texture(Gdx.files.internal("$texturesPath/bot$botNum.png"))
+            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun$botNum.png"))
             AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager,hitBox.radius * 1.5f, hitBox.radius * 0.5f))
         }
     }

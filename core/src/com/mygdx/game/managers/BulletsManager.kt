@@ -16,7 +16,7 @@ import kotlin.math.sin
 
 class BulletsManager {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
-    private val bulletImage = Texture(Gdx.files.internal("$texturesPath/test.png"))
+    private val bulletImage = Texture(Gdx.files.internal("$texturesPath/bullet.png"))
     private val bulletsOnScreen = Array<Bullet>()
     private val bulletRadius = 10f
     private val bulletSpeed = 100f
