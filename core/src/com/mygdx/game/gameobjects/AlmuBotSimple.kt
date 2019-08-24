@@ -14,6 +14,7 @@ const val RESPAWN_TIME = 5.0
 const val SHOOT_COOLDOWN = 0.25
 const val RELOAD_TIME = SHOOT_COOLDOWN * 4
 const val LITTLE_NEG = -0.001
+const val MAX_SPEED = 500
 
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
@@ -126,7 +127,10 @@ class AlmuBotSimple(val botId: Int,
 
         previousPosition.x = hitBox.x
         previousPosition.y = hitBox.y
-        speed = newSpeed
+        speed = if (newSpeed.len() <= MAX_SPEED)
+            newSpeed
+        else
+            newSpeed.setLength(MAX_SPEED.toFloat())
         hitBox.x += speed.x * delta
         hitBox.y += speed.y * delta
 
