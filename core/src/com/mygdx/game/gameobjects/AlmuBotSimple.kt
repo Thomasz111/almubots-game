@@ -15,6 +15,8 @@ const val SHOOT_COOLDOWN = 0.25
 const val RELOAD_TIME = SHOOT_COOLDOWN * 4
 const val LITTLE_NEG = -0.001
 const val MAX_SPEED = 500
+const val HIT_POINTS = 1
+const val KILL_POINTS = 10
 
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
@@ -28,6 +30,8 @@ class AlmuBotSimple(val botId: Int,
     var dead = false
         private set
     var ammo = START_AMMO
+        private set
+    var score = 0
         private set
     private var respawnCounter = 0.0
     private var cooldownCounter = LITTLE_NEG
@@ -72,11 +76,13 @@ class AlmuBotSimple(val botId: Int,
         if(bullet.bot.botId != botId) {
             println(botId.toString() + " hit by " + bullet.bot.botId)
             life -= 1
+            bullet.bot.score += HIT_POINTS
 
             if (life == 0) {
                 dead = true
                 speed = Vector2(0f, 0f)
                 newSpeed = Vector2(0f, 0f)
+                bullet.bot.score += KILL_POINTS
             }
         }
     }
