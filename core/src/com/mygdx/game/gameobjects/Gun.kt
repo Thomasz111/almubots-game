@@ -32,7 +32,7 @@ class Gun(private val gunImage: Texture,
     fun shoot(bot: AlmuBotSimple){
         val x = bot.hitBox.x + length * cos(rotation * Math.PI / 180).toFloat()
         val y = bot.hitBox.y + length * sin(rotation * Math.PI / 180).toFloat()
-        bulletsManager.spawnBullet(bot.botId, x, y, rotation)
+        bulletsManager.spawnBullet(bot, x, y, rotation)
     }
 
     fun update(){

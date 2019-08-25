@@ -69,8 +69,8 @@ class AlmuBotSimple(val botId: Int,
     }
 
     fun manageCollisionWith(bullet: Bullet) {
-        if(bullet.botId != botId) {
-            println(botId.toString() + " hit by " + bullet.botId)
+        if(bullet.bot.botId != botId) {
+            println(botId.toString() + " hit by " + bullet.bot.botId)
             life -= 1
 
             if (life == 0) {

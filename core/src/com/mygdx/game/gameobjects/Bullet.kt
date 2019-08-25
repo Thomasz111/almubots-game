@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.physics.CirclePhysics
 
-class Bullet(val botId: Int,
+class Bullet(val bot: AlmuBotSimple,
              val hitBox: Circle,
              private val bulletImage: Texture,
              private val physics: CirclePhysics,
@@ -39,7 +39,7 @@ class Bullet(val botId: Int,
     }
 
     fun manageCollisionWith(almuBotOther: AlmuBotSimple) {
-        if(almuBotOther.botId != botId)
+        if(almuBotOther.botId != bot.botId)
             collided = true
     }
 
