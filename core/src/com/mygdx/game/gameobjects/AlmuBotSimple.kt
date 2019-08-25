@@ -20,7 +20,7 @@ const val KILL_POINTS = 10
 
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
-                    private val botImage: Texture,
+                    val botImage: Texture,
                     private val physics: CirclePhysics,
                     val gun: Gun) {
     var speed = Vector2(0f, 0f)
