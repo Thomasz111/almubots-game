@@ -21,9 +21,9 @@ class BulletsManager {
     private val bulletRadius = 10f
     private val bulletSpeed = 700f
 
-    fun spawnBullet(botId: Int, x: Float, y: Float, rotation: Float) {
+    fun spawnBullet(bot: AlmuBotSimple, x: Float, y: Float, rotation: Float) {
         val speed = Vector2(bulletSpeed * cos(rotation * Math.PI / 180).toFloat(), bulletSpeed * sin(rotation * Math.PI / 180).toFloat())
-        val bullet = Bullet(botId, Circle(x, y, bulletRadius), bulletImage, CirclePhysicsSimple(), speed, rotation)
+        val bullet = Bullet(bot, Circle(x, y, bulletRadius), bulletImage, CirclePhysicsSimple(), speed, rotation)
         bulletsOnScreen.add(bullet)
     }
 
