@@ -14,11 +14,10 @@ import com.mygdx.game.gameobjects.Gun
 import com.mygdx.game.physics.CirclePhysics
 import com.mygdx.game.utils.Constants
 import java.nio.file.Paths
+import java.util.*
 
 class BotsManager {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
-    private val botImage = Texture(Gdx.files.internal("$texturesPath/bot.png"))
-    private val gunImage = Texture(Gdx.files.internal("$texturesPath/test.png"))
     var bots = emptyArray<AlmuBotSimple>()
         private set
     private val botRadius = 32f
@@ -26,10 +25,12 @@ class BotsManager {
     fun initBots(botsNum: Int, physics: CirclePhysics, bulletsManager: BulletsManager) {
         bots = Array(botsNum) { botNum ->
             val hitBox = Circle(
-                Constants.screenWidth.toFloat() / 2f - 64f / 2f,
-                (botNum + 1) * 70f,
-                botRadius
+                    botRadius + Random().nextInt(Constants.screenWidth - botRadius.toInt()),
+                    botRadius + Random().nextInt(Constants.screenHeight - botRadius.toInt()),
+                    botRadius
             )
+            val botImage = Texture(Gdx.files.internal("$texturesPath/bot/bot$botNum.png"))
+            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun/gun$botNum.png"))
             AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager,hitBox.radius * 1.5f, hitBox.radius * 0.5f))
         }
     }
