@@ -29,8 +29,8 @@ class BotsManager {
                     botRadius + Random().nextInt(Constants.screenHeight - botRadius.toInt()),
                     botRadius
             )
-            val botImage = Texture(Gdx.files.internal("$texturesPath/bot$botNum.png"))
-            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun$botNum.png"))
+            val botImage = Texture(Gdx.files.internal("$texturesPath/bot/bot$botNum.png"))
+            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun/gun$botNum.png"))
             AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager,hitBox.radius * 1.5f, hitBox.radius * 0.5f))
         }
     }
