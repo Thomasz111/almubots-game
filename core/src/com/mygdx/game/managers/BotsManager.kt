@@ -44,17 +44,21 @@ class BotsManager {
     }
 
     fun processCommands(cmds: List<Command>) {
-        cmds.forEach { dirtyCmd ->
-            val cmd = CleanCommand(dirtyCmd)
-            val bot = bots[cmd.botNo]
-            if (!bot.dead) {
-                bot.speed.x += 10 * cmd.dx
-                bot.speed.y += 10 * cmd.dy
-                if (cmd.shoot) {
-                    bot.testShooting()
+        try {   // TODO make copy (let?)
+            cmds.forEach { dirtyCmd ->
+                val cmd = CleanCommand(dirtyCmd)
+                val bot = bots[cmd.botNo]
+                if (!bot.dead) {
+                    bot.speed.x += 10 * cmd.dx
+                    bot.speed.y += 10 * cmd.dy
+                    if (cmd.shoot) {
+                        bot.testShooting()
+                    }
+                    bot.rotateGun(cmd.rotation)
                 }
-                bot.rotateGun(cmd.rotation)
             }
+        } catch (e: java.util.ConcurrentModificationException) {
+            // pass
         }
     }
 
@@ -88,7 +92,8 @@ class BotsManager {
 
     fun getStatus() = bots.map { bot ->
         GameStatus.BotStatus(
-            bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo, bot.life, bot.shoot)
+            bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo, bot.life, bot.shoot, bot.score
+        )
     }
 
     fun processUserInputs() {

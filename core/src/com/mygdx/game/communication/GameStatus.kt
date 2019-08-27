@@ -9,6 +9,7 @@ data class GameStatus(val bots: List<BotStatus>) {
         val angle: Float,
         val ammo: Int,
         val life: Int,
-        val shoot: Boolean
+        val shoot: Boolean,
+        val score: Int
     )
 }
