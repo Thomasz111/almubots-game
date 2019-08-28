@@ -92,7 +92,8 @@ class BotsManager {
 
     fun getStatus() = bots.map { bot ->
         GameStatus.BotStatus(
-            bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo, bot.life, bot.shoot, bot.score
+            bot.botId, bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo,
+            bot.life, bot.shoot, bot.score
         )
     }
 
