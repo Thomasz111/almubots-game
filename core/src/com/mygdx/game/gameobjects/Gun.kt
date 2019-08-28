@@ -36,8 +36,7 @@ class Gun(private val gunImage: Texture,
     }
 
     fun update(){
-        if(rotation >= 360)
-            rotation %= 360
+        rotation %= 360
     }
 
 }
