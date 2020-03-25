@@ -20,7 +20,11 @@ class MainMenuScreen(private val game: Game,
                      private val camera: OrthographicCamera,
                      private val botsManager: BotsManager,
                      private val bulletsManager: BulletsManager) : KtxScreen {
+
+    private var numOfBots = readLine()!!.toInt()
+
     override fun render(delta: Float) {
+
         camera.update()
         batch.projectionMatrix = camera.combined
 
@@ -31,7 +35,6 @@ class MainMenuScreen(private val game: Game,
             font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
         }
 
-        val numOfBots = 9
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
             val physics = CirclePhysicsHeavy()

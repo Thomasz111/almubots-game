@@ -44,17 +44,21 @@ class BotsManager {
     }
 
     fun processCommands(cmds: List<Command>) {
-        cmds.forEach { dirtyCmd ->
-            val cmd = CleanCommand(dirtyCmd)
-            val bot = bots[cmd.botNo]
-            if (!bot.dead) {
-                bot.speed.x += 10 * cmd.dx
-                bot.speed.y += 10 * cmd.dy
-                if (cmd.shoot) {
-                    bot.testShooting()
+        try {   // TODO make copy (let?)
+            cmds.forEach { dirtyCmd ->
+                val cmd = CleanCommand(dirtyCmd)
+                val bot = bots[cmd.botNo]
+                if (!bot.dead) {
+                    bot.speed.x += 10 * cmd.dx
+                    bot.speed.y += 10 * cmd.dy
+                    if (cmd.shoot) {
+                        bot.testShooting()
+                    }
+                    bot.rotateGun(cmd.rotation)
                 }
-                bot.rotateGun(cmd.rotation)
             }
+        } catch (e: java.util.ConcurrentModificationException) {
+            // pass
         }
     }
 
@@ -88,7 +92,9 @@ class BotsManager {
 
     fun getStatus() = bots.map { bot ->
         GameStatus.BotStatus(
-            bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo, bot.life, bot.shoot)
+            bot.botId, bot.hitBox.x, bot.hitBox.y, bot.speed.x, bot.speed.y, bot.gun.rotation, bot.ammo,
+            bot.life, bot.shoot, bot.score
+        )
     }
 
     fun processUserInputs() {
@@ -129,18 +135,21 @@ class BotsManager {
     }
 
     fun printDiagnostics(batch: Batch, font: BitmapFont) {
-        if (bots.isNotEmpty()) {
-            font.draw(batch, "bot1 Y speed: " + bots[0].speed.y, 0f, 480f)
-            font.draw(batch, "bot1 X speed: " + bots[0].speed.x, 0f, 460f)
-            font.draw(batch, "bot1 life: ${bots[0].life}", 0f, 440f)
-            font.draw(batch, "bot1 ammo: ${bots[0].ammo}", 0f, 420f)
-        }
+        bots.forEach { bot ->
+            val lineSep = 30
+            val offset = 10
+            val baseY = Constants.screenHeight - lineSep * bot.botId - offset
+            val miniatureRadius = 20f
+            val text = "Bot ${bot.botId}    Score: ${bot.score}, Life: ${bot.life}, Ammo: ${bot.ammo}"
 
-        if (bots.size >= 2) {
-            font.draw(batch, "bot2 Y speed: " + bots[1].speed.y, 0f, 400f)
-            font.draw(batch, "bot2 X speed: " + bots[1].speed.x, 0f, 380f)
-            font.draw(batch, "bot2 life: ${bots[1].life}", 0f, 360f)
-            font.draw(batch, "bot2 ammo: ${bots[1].ammo}", 0f, 340f)
+            batch.draw(
+                bot.botImage,
+                5f,
+                baseY.toFloat() - miniatureRadius * (3f / 4),
+                miniatureRadius,
+                miniatureRadius
+            )
+            font.draw(batch, text, miniatureRadius + 10f, baseY.toFloat())
         }
     }
 }
