@@ -14,6 +14,7 @@ object DesktopLauncher {
         config.width = Constants.screenWidth
         config.height = Constants.screenHeight
         Server().start()
-        LwjglApplication(Game(), config)
+        Game().start()
+//        LwjglApplication(Game(), config)
     }
 }

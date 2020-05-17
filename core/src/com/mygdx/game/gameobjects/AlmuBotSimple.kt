@@ -1,6 +1,5 @@
 package com.mygdx.game.gameobjects
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
@@ -20,7 +19,8 @@ const val KILL_POINTS = 10
 
 class AlmuBotSimple(val botId: Int,
                     val hitBox: Circle,
-                    val botImage: Texture,
+
+//                    val botImage: Texture,
                     private val physics: CirclePhysics,
                     val gun: Gun) {
     var speed = Vector2(0f, 0f)
@@ -41,17 +41,17 @@ class AlmuBotSimple(val botId: Int,
     private var newSpeed = Vector2(0f, 0f)
     private var positionAfterCollision = Vector2(0f, 0f)
 
-    fun draw(batch: Batch) {
-        if (dead) return
-        batch.draw(
-            botImage,
-            hitBox.x - hitBox.radius,
-            hitBox.y - hitBox.radius,
-            hitBox.radius * 2,
-            hitBox.radius * 2
-        )
-        gun.draw(batch, this)
-    }
+//    fun draw(batch: Batch) {
+//        if (dead) return
+//        batch.draw(
+//            botImage,
+//            hitBox.x - hitBox.radius,
+//            hitBox.y - hitBox.radius,
+//            hitBox.radius * 2,
+//            hitBox.radius * 2
+//        )
+//        gun.draw(batch, this)
+//    }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {
         return physics.outOfBounds(hitBox, screenWidth, screenHeight)

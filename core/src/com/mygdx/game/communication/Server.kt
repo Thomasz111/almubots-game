@@ -24,15 +24,15 @@ class Server {
             }
             routing {
                 get("/") {
-                    val now = Calendar.getInstance().time
+                    val now = Calendar.getInstance().timeInMillis
                     while (now > Synchronizer.timestamp) {}
                     call.respondText("", ContentType.Text.Html)
                 }
 
                 post("/cmd") {
-                    val now = Calendar.getInstance().time
+                    val now = Calendar.getInstance().timeInMillis
                     val post = call.receive<Command>()
-                    Synchronizer.cmds.add(post)
+                    Synchronizer.cmds = Synchronizer.cmds.plus(post)
                     while (now > Synchronizer.timestamp) {}
                     call.respond(Synchronizer.gameStatus)
                 }
