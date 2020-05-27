@@ -11,6 +11,8 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.util.*
 
+const val MAX_NUM_OF_ROUNDS = 3600
+
 class GameScreen(
         private val batch: Batch,
         private val font: BitmapFont,
@@ -20,9 +22,11 @@ class GameScreen(
 ) : KtxScreen {
 
     private var gameReset = false
+    private var roundNum = 0
 
     override fun render(delta: Float) {
         gameReset = false
+        roundNum += 1
 
         // generally good practice to update the camera's matrices once per frame
         camera.update()
@@ -60,10 +64,11 @@ class GameScreen(
         botsManager.updateBots(delta)
         bulletsManager.updateBullets(delta)
 
-        if (botsManager.somebodyWon()) {
+        if (roundNum >= MAX_NUM_OF_ROUNDS) {
             botsManager.reset()
             bulletsManager.reset()
             gameReset = true
+            roundNum = 0
         }
 
         generateResponse(gameReset, delta)
