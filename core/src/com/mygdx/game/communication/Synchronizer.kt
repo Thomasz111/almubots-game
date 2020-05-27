@@ -8,5 +8,5 @@ object Synchronizer {
     @Volatile
     var cmds = mutableListOf<Command>()
     @Volatile
-    var gameStatus = GameStatus(listOf(), 0f)
+    var gameStatus = GameStatus(listOf(), false, 0f)
 }

@@ -19,7 +19,11 @@ class GameScreen(
         private val bulletsManager: BulletsManager
 ) : KtxScreen {
 
+    private var gameReset = false
+
     override fun render(delta: Float) {
+        gameReset = false
+
         // generally good practice to update the camera's matrices once per frame
         camera.update()
 
@@ -59,15 +63,16 @@ class GameScreen(
         if (botsManager.somebodyWon()) {
             botsManager.reset()
             bulletsManager.reset()
+            gameReset = true
         }
 
-        generateResponse(delta)
+        generateResponse(gameReset, delta)
         botsManager.clearShoots()
     }
 
-    private fun generateResponse(delta: Float) {
+    private fun generateResponse(gameReset: Boolean, delta: Float) {
         val botsStatus = botsManager.getStatus()
-        Synchronizer.gameStatus = GameStatus(botsStatus, delta)
+        Synchronizer.gameStatus = GameStatus(botsStatus, gameReset, delta)
 
         Synchronizer.timestamp = Calendar.getInstance().time
     }
