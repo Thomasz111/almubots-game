@@ -16,6 +16,8 @@ import com.mygdx.game.utils.Constants
 import java.nio.file.Paths
 import java.util.*
 
+const val WIN_SCORE = 1000
+
 class BotsManager {
     private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
     var bots = emptyArray<AlmuBotSimple>()
@@ -97,6 +99,12 @@ class BotsManager {
         )
     }
 
+    fun reset() {
+        bots.forEach { bot ->
+            bot.reset()
+        }
+    }
+
     fun processUserInputs() {
         if (bots.isNotEmpty() && !bots[0].dead) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -151,5 +159,13 @@ class BotsManager {
             )
             font.draw(batch, text, miniatureRadius + 10f, baseY.toFloat())
         }
+    }
+
+    fun somebodyWon(): Boolean {
+        bots.forEach { bot ->
+            if(bot.score >= WIN_SCORE)
+                return true
+        }
+        return false
     }
 }

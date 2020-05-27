@@ -56,6 +56,11 @@ class GameScreen(
         botsManager.updateBots(delta)
         bulletsManager.updateBullets(delta)
 
+        if (botsManager.somebodyWon()) {
+            botsManager.reset()
+            bulletsManager.reset()
+        }
+
         generateResponse(delta)
         botsManager.clearShoots()
     }
