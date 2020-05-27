@@ -112,6 +112,25 @@ class AlmuBotSimple(val botId: Int,
         }
     }
 
+    fun reset() {
+        speed = Vector2(0f, 0f)
+        shoot = false
+        life = START_LIFE
+        dead = false
+        ammo = START_AMMO
+        score = 0
+
+        respawnCounter = 0.0
+        cooldownCounter = LITTLE_NEG
+        reloadCounter = LITTLE_NEG
+        previousPosition = Vector2(0f, 0f)
+        collided = false
+        newSpeed = Vector2(0f, 0f)
+        positionAfterCollision = Vector2(0f, 0f)
+
+        gun.reset()
+    }
+
     fun update(delta: Float) {
         if (dead) return
 
