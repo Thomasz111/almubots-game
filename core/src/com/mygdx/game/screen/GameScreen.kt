@@ -14,7 +14,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.util.*
 
-const val MAX_NUM_OF_ROUNDS = 600
+const val MAX_NUM_OF_ROUNDS = 200
 
 class GameScreen(private val batch: Batch,
                  private val font: BitmapFont,
@@ -27,67 +27,70 @@ class GameScreen(private val batch: Batch,
     private var roundNum = 0
 
     override fun render(delta: Float) {
-        gameReset = false
-        roundNum += 1
+        if (GameObj.semaphores.all{semaphore -> semaphore.isAcquired.value}) {
 
-        var deltaMicros = System.nanoTime() / 1000L
-        var deltaInit = deltaMicros / 1000L
-        var previousTimestamp: Long = System.nanoTime() / 1000L
+            gameReset = false
+            roundNum += 1
+
+            var deltaMicros = System.nanoTime() / 1000L
+            var deltaInit = deltaMicros / 1000L
+            var previousTimestamp: Long = System.nanoTime() / 1000L
 //    var delta = System.nanoTime() / 1000L
-        val calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance()
 
-        // generally good practice to update the camera's matrices once per frame
-        camera.update()
+            // generally good practice to update the camera's matrices once per frame
+            camera.update()
 
-        // tell the SpriteBatch to render in the coordinate system specified by the camera.
-        batch.projectionMatrix = camera.combined
+            // tell the SpriteBatch to render in the coordinate system specified by the camera.
+            batch.projectionMatrix = camera.combined
 
-        // Respawn
+            // Respawn
 
 
-        deltaMicros = System.nanoTime() / 1000L - previousTimestamp // DELTA MILLIS JEST W MICROSEKUNDACH
+            deltaMicros = System.nanoTime() / 1000L - previousTimestamp // DELTA MILLIS JEST W MICROSEKUNDACH
 //        val delta = deltaMicros / 1000000.0f // DELTA MUSI BYC W SEKUNDACH
-        previousTimestamp = System.nanoTime() / 1000L
+            previousTimestamp = System.nanoTime() / 1000L
 
 
-        botsManager.manageRespawn(delta)
+            botsManager.manageRespawn(delta)
 
-        val cmds = Synchronizer.cmds
+            val cmds = Synchronizer.cmds
 
-        // begin a new batch and draw the almuBot
-        batch.use {
-        botsManager.printDiagnostics(it, font)
-            botsManager.drawBots(it)
-            bulletsManager.drawBullets(it)
-        }
+            // begin a new batch and draw the almuBot
+            batch.use {
+                botsManager.printDiagnostics(it, font)
+                botsManager.drawBots(it)
+                bulletsManager.drawBullets(it)
+            }
 
-        // process user input
+            // process user input
 //        botsManager.processUserInputs()
 
-        // API
-        botsManager.processCommands(cmds)
-        Synchronizer.cmds = listOf()
+            // API
+            botsManager.processCommands(cmds)
+            Synchronizer.cmds = listOf()
 
-        // check for collisions with other bots
-        botsManager.manageCollisionsWithBots()
-        bulletsManager.manageCollisionsWithBots(com.badlogic.gdx.utils.Array(botsManager.bots))
+            // check for collisions with other bots
+            botsManager.manageCollisionsWithBots()
+            bulletsManager.manageCollisionsWithBots(com.badlogic.gdx.utils.Array(botsManager.bots))
 
-        // wall collisions
-        botsManager.manageCollisionsWithWalls()
-        bulletsManager.manageCollisionsWithWalls()
+            // wall collisions
+            botsManager.manageCollisionsWithWalls()
+            bulletsManager.manageCollisionsWithWalls()
 
-        botsManager.updateBots(delta)
-        bulletsManager.updateBullets(delta)
+            botsManager.updateBots(delta)
+            bulletsManager.updateBullets(delta)
 
-        if (roundNum >= MAX_NUM_OF_ROUNDS) {
-            botsManager.reset()
-            bulletsManager.reset()
-            gameReset = true
-            roundNum = 0
+            if (roundNum >= MAX_NUM_OF_ROUNDS) {
+                botsManager.reset()
+                bulletsManager.reset()
+                gameReset = true
+                roundNum = 0
+            }
+
+            generateResponse(gameReset, delta)
+            botsManager.clearShoots()
         }
-
-        generateResponse(gameReset, delta)
-        botsManager.clearShoots()
     }
 
     private fun generateResponse(gameReset: Boolean, delta: Float) {

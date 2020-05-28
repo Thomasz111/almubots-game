@@ -128,8 +128,8 @@ class AlmuBotSimple(val botId: Int,
         collided = false
         newSpeed = Vector2(0f, 0f)
         positionAfterCollision = Vector2(0f, 0f)
-        hitBox.x = 200 * botId + hitBox.radius * 2
-        hitBox.y = 200 * botId + hitBox.radius * 2
+        hitBox.x = 300 * botId + hitBox.radius * 2
+        hitBox.y = 300 * botId + hitBox.radius * 2
 
         gun.reset()
     }

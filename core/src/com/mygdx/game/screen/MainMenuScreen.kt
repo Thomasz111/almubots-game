@@ -23,7 +23,7 @@ class MainMenuScreen(private val game: Game,
                      private val bulletsManager: BulletsManager
     ): KtxScreen {
 
-    private var numOfBots = 3//readLine()!!.toInt()
+    private var numOfBots = 2 //readLine()!!.toInt()
 
 //    private val gameScreen: GameScreen = GameScreen(botsManager, bulletsManager)
     private val timer = Timer()
@@ -86,6 +86,7 @@ class MainMenuScreen(private val game: Game,
 //            }
 //        }
             val JANUSZ_MODE = true
+
             if (JANUSZ_MODE) {
                 januszGameScreen = GameScreenWithoutScreen(botsManager, bulletsManager)
                 endlessLoop()
