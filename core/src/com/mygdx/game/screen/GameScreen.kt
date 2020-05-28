@@ -1,6 +1,6 @@
 package com.mygdx.game.screen
 
-import com.mygdx.game.communication.Command
+import com.mygdx.game.GameObj
 import com.mygdx.game.communication.GameStatus
 import com.mygdx.game.communication.Synchronizer
 import com.mygdx.game.managers.BotsManager
@@ -12,7 +12,13 @@ class GameScreen(
         private val bulletsManager: BulletsManager
 ) {
 
-    fun render(delta: Float) {
+    var deltaMicros = System.nanoTime() / 1000L
+    var deltaInit = deltaMicros / 1000L
+    var previousTimestamp: Long = System.nanoTime() / 1000L
+//    var delta = System.nanoTime() / 1000L
+    val calendar = Calendar.getInstance()
+
+    fun render() {
         // generally good practice to update the camera's matrices once per frame
 //        camera.update()
 
@@ -20,6 +26,13 @@ class GameScreen(
 //        batch.projectionMatrix = camera.combined
 
         // Respawn
+
+
+        deltaMicros = System.nanoTime()/1000L - previousTimestamp // DELTA MILLIS JEST W MICROSEKUNDACH
+        val delta = deltaMicros/1000000.0f // DELTA MUSI BYC W SEKUNDACH
+        previousTimestamp = System.nanoTime()/1000L
+
+
         botsManager.manageRespawn(delta)
 
         val cmds = Synchronizer.cmds
@@ -58,6 +71,10 @@ class GameScreen(
         Synchronizer.gameStatus = GameStatus(botsStatus, delta)
 
         Synchronizer.timestamp = Calendar.getInstance().timeInMillis
+
+//        println("Releasing semaphores")
+        GameObj.semaphores.forEach { semaphore -> semaphore.release() }
+//        Synchronizer.ready.value = true
     }
 
 //    override fun dispose() {

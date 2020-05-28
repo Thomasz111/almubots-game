@@ -1,16 +1,19 @@
 package com.mygdx.game.screen
 
+import com.mygdx.game.GameObj
+import com.mygdx.game.MySemaphore
 import com.mygdx.game.managers.BotsManager
 import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.physics.CirclePhysicsMomentum
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.schedule
 
 class MainMenuScreen(
                      private val botsManager: BotsManager,
                      private val bulletsManager: BulletsManager) { //}: KtxScreen {
 
-    private var numOfBots = readLine()!!.toInt()
+    private var numOfBots = 1 //readLine()!!.toInt()
 
     private val gameScreen: GameScreen = GameScreen(botsManager, bulletsManager)
     private val timer = Timer()
@@ -48,6 +51,9 @@ class MainMenuScreen(
 //        }
 //        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
         val physics = CirclePhysicsMomentum()
+        GameObj.numOfBots = numOfBots
+        GameObj.semaphores = List(numOfBots) { MySemaphore() }
+        GameObj.semaphores.forEach { latch -> latch.acquire(false) }
         botsManager.initBots(numOfBots, physics, bulletsManager)
 
 //        val calendar = Calendar.getInstance()
@@ -58,6 +64,7 @@ class MainMenuScreen(
         timer.schedule(deltaMillis) {
             endlessLoop()
         }
+//        Thread { endlessLoop() }.start()
 
 //        while(true) {
 //            if(calendar.timeInMillis > now + delta * 1000) {
@@ -73,7 +80,13 @@ class MainMenuScreen(
     }
 
     fun endlessLoop() {
-        gameScreen.render(delta)
+//        if (Synchronizer.numOfBotsResponses.value >= GameObj.numOfBots) {
+//        println("Available permits: " + GameObj.latches[0].count)
+        if (GameObj.semaphores.all{semaphore -> semaphore.isAcquired.value}) {
+//            Synchronizer.numOfBotsResponses.value = 0
+//            println("Rendering game")
+            gameScreen.render()
+        }
         timer.schedule(deltaMillis) {
             endlessLoop()
         }

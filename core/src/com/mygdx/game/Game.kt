@@ -3,7 +3,10 @@ package com.mygdx.game
 import com.mygdx.game.managers.BotsManager
 import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.screen.MainMenuScreen
+import kotlinx.coroutines.sync.Semaphore
 import ktx.inject.Context
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.CyclicBarrier
 
 class Game {
     //: KtxGame<KtxScreen>() {
@@ -37,4 +40,9 @@ class Game {
         context.dispose()
 //        super.dispose()
     }
+}
+
+object GameObj {
+    lateinit var semaphores: List<MySemaphore>
+    var numOfBots: Int = 0
 }
