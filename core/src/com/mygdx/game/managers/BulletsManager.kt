@@ -15,15 +15,15 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class BulletsManager {
-//    private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
-//    private val bulletImage = Texture(Gdx.files.internal("$texturesPath/bullet.png"))
+    private val texturesPath = Paths.get("assets/textures").toAbsolutePath().toString()
+    private val bulletImage = Texture(Gdx.files.internal("$texturesPath/bullet.png"))
     private val bulletsOnScreen = Array<Bullet>()
     private val bulletRadius = 10f
     private val bulletSpeed = 700f
 
     fun spawnBullet(bot: AlmuBotSimple, x: Float, y: Float, rotation: Float) {
         val speed = Vector2(bulletSpeed * cos(rotation * Math.PI / 180).toFloat(), bulletSpeed * sin(rotation * Math.PI / 180).toFloat())
-        val bullet = Bullet(bot, Circle(x, y, bulletRadius), CirclePhysicsSimple(), speed, rotation)
+        val bullet = Bullet(bot, Circle(x, y, bulletRadius), bulletImage, CirclePhysicsSimple(), speed, rotation)
         bulletsOnScreen.add(bullet)
     }
 
@@ -31,9 +31,9 @@ class BulletsManager {
         bulletsOnScreen.removeValue(bullet, true)
     }
 
-//    fun drawBullets(batch: Batch) {
-//        bulletsOnScreen.forEach { bullet -> bullet.draw(batch) }
-//    }
+    fun drawBullets(batch: Batch) {
+        bulletsOnScreen.forEach { bullet -> bullet.draw(batch) }
+    }
 
     fun manageCollisionsWithWalls() {
         bulletsOnScreen.forEach { bullet ->

@@ -14,19 +14,16 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.util.*
 
-const val MAX_NUM_OF_ROUNDS = 600
 
-class GameScreen(private val batch: Batch,
-                 private val font: BitmapFont,
-                 private val camera: OrthographicCamera,
-                 private val botsManager: BotsManager,
+class GameScreenWithoutScreen(private val botsManager: BotsManager,
                  private val bulletsManager: BulletsManager
-): KtxScreen {
+) {
 
     private var gameReset = false
     private var roundNum = 0
+    private val delta = 0.0166666666667f
 
-    override fun render(delta: Float) {
+    fun render() {
         gameReset = false
         roundNum += 1
 
@@ -36,15 +33,6 @@ class GameScreen(private val batch: Batch,
 //    var delta = System.nanoTime() / 1000L
         val calendar = Calendar.getInstance()
 
-        // generally good practice to update the camera's matrices once per frame
-        camera.update()
-
-        // tell the SpriteBatch to render in the coordinate system specified by the camera.
-        batch.projectionMatrix = camera.combined
-
-        // Respawn
-
-
         deltaMicros = System.nanoTime() / 1000L - previousTimestamp // DELTA MILLIS JEST W MICROSEKUNDACH
 //        val delta = deltaMicros / 1000000.0f // DELTA MUSI BYC W SEKUNDACH
         previousTimestamp = System.nanoTime() / 1000L
@@ -53,16 +41,6 @@ class GameScreen(private val batch: Batch,
         botsManager.manageRespawn(delta)
 
         val cmds = Synchronizer.cmds
-
-        // begin a new batch and draw the almuBot
-        batch.use {
-        botsManager.printDiagnostics(it, font)
-            botsManager.drawBots(it)
-            bulletsManager.drawBullets(it)
-        }
-
-        // process user input
-//        botsManager.processUserInputs()
 
         // API
         botsManager.processCommands(cmds)
@@ -101,7 +79,7 @@ class GameScreen(private val batch: Batch,
 //        Synchronizer.ready.value = true
     }
 
-    override fun dispose() {
+    fun dispose() {
 //        botImage.dispose()    // TODO ???
     }
 }

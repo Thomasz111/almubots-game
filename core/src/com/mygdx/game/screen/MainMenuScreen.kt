@@ -1,38 +1,51 @@
 package com.mygdx.game.screen
 
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.mygdx.game.Game
 import com.mygdx.game.GameObj
 import com.mygdx.game.MySemaphore
 import com.mygdx.game.managers.BotsManager
 import com.mygdx.game.managers.BulletsManager
 import com.mygdx.game.physics.CirclePhysicsMomentum
+import ktx.app.KtxScreen
+import ktx.graphics.use
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.schedule
 
-class MainMenuScreen(
+class MainMenuScreen(private val game: Game,
+                     private val batch: Batch,
+                     private val font: BitmapFont,
+                     private val camera: OrthographicCamera,
                      private val botsManager: BotsManager,
-                     private val bulletsManager: BulletsManager) { //}: KtxScreen {
+                     private val bulletsManager: BulletsManager
+    ): KtxScreen {
 
-    private var numOfBots = readLine()!!.toInt()
+    private var numOfBots = 3//readLine()!!.toInt()
 
-    private val gameScreen: GameScreen = GameScreen(botsManager, bulletsManager)
+//    private val gameScreen: GameScreen = GameScreen(botsManager, bulletsManager)
     private val timer = Timer()
     private var delta: Float = 0.001f
     private var deltaMillis: Long = 1L
+    private lateinit var januszGameScreen: GameScreenWithoutScreen
 
-    fun render(delta: Float) {
+    private var done = false
 
-//        camera.update()
-//        batch.projectionMatrix = camera.combined
+    override fun render(delta: Float) {
 
-//        batch.use {
-//            font.draw(it, "Welcome to ALMUBOTS!!! ", 100f, 150f)
-//            font.draw(it, "press 1 to test simple physics", 100f, 110f)
-//            font.draw(it, "press 2 to test simpler physics", 100f, 70f)
-//            font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
-//        }
+        camera.update()
+        batch.projectionMatrix = camera.combined
 
-
+        batch.use {
+            font.draw(it, "Welcome to ALMUBOTS!!! ", 100f, 150f)
+            font.draw(it, "press 1 to test simple physics", 100f, 110f)
+            font.draw(it, "press 2 to test simpler physics", 100f, 70f)
+            font.draw(it, "press 3 to test not so simple physics", 100f, 30f)
+        }
+//
+//
 //        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
 //            val physics = CirclePhysicsHeavy()
 //            botsManager.initBots(numOfBots, physics, bulletsManager)
@@ -50,20 +63,21 @@ class MainMenuScreen(
 //            dispose()
 //        }
 //        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-        val physics = CirclePhysicsMomentum()
-        GameObj.numOfBots = numOfBots
-        GameObj.semaphores = List(numOfBots) { MySemaphore() }
-        GameObj.semaphores.forEach { latch -> latch.acquire(false) }
-        botsManager.initBots(numOfBots, physics, bulletsManager)
+        if (!done) {
+            val physics = CirclePhysicsMomentum()
+            GameObj.numOfBots = numOfBots
+            GameObj.semaphores = List(numOfBots) { MySemaphore() }
+            GameObj.semaphores.forEach { latch -> latch.acquire(false) }
+            botsManager.initBots(numOfBots, physics, bulletsManager)
 
 //        val calendar = Calendar.getInstance()
 //        var now = calendar.timeInMillis
 
-        this.delta = delta
-        this.deltaMillis = (delta * 1000).toLong()
-        timer.schedule(deltaMillis) {
-            endlessLoop()
-        }
+//        this.delta = delta
+//        this.deltaMillis = (delta * 1000).toLong()
+//        timer.schedule(deltaMillis) {
+//            endlessLoop()
+//        }
 //        Thread { endlessLoop() }.start()
 
 //        while(true) {
@@ -71,12 +85,18 @@ class MainMenuScreen(
 //                now = calendar.timeInMillis
 //            }
 //        }
-
-//        game.addScreen(GameScreen(batch, font, camera, botsManager, bulletsManager))
-//            game.setScreen<GameScreen>()
-//            game.removeScreen<MainMenuScreen>()
-//            dispose()
-//        }
+            val JANUSZ_MODE = true
+            if (JANUSZ_MODE) {
+                januszGameScreen = GameScreenWithoutScreen(botsManager, bulletsManager)
+                endlessLoop()
+            } else {
+                game.addScreen(GameScreen(batch, font, camera, botsManager, bulletsManager))
+                game.setScreen<GameScreen>()
+                game.removeScreen<MainMenuScreen>()
+                dispose()
+            }
+            done = true
+        }
     }
 
     fun endlessLoop() {
@@ -85,7 +105,7 @@ class MainMenuScreen(
         if (GameObj.semaphores.all{semaphore -> semaphore.isAcquired.value}) {
 //            Synchronizer.numOfBotsResponses.value = 0
 //            println("Rendering game")
-            gameScreen.render()
+            januszGameScreen.render()
         }
         timer.schedule(deltaMillis) {
             endlessLoop()

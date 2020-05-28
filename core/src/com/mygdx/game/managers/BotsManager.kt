@@ -2,6 +2,7 @@ package com.mygdx.game.managers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Circle
@@ -28,9 +29,9 @@ class BotsManager {
                     botRadius + Random().nextInt(Constants.screenHeight - botRadius.toInt()),
                     botRadius
             )
-//            val botImage = Texture(Gdx.files.internal("$texturesPath/bot/bot$botNum.png"))
-//            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun/gun$botNum.png"))
-            AlmuBotSimple(botNum, hitBox, physics, Gun(bulletsManager, hitBox.radius * 1.5f, hitBox.radius * 0.5f))
+            val botImage = Texture(Gdx.files.internal("$texturesPath/bot/bot$botNum.png"))
+            val gunImage = Texture(Gdx.files.internal("$texturesPath/gun/gun$botNum.png"))
+            AlmuBotSimple(botNum, hitBox, botImage, physics, Gun(gunImage, bulletsManager, hitBox.radius * 1.5f, hitBox.radius * 0.5f))
         }
     }
 
@@ -38,9 +39,9 @@ class BotsManager {
         bots.forEach { it.manageRespawn(delta) }
     }
 
-//    fun drawBots(batch: Batch) {
-//        bots.forEach { bot -> bot.draw(batch) }
-//    }
+    fun drawBots(batch: Batch) {
+        bots.forEach { bot -> bot.draw(batch) }
+    }
 
     fun processCommands(cmds: List<Command>) {
         try {   // TODO make copy (let?)
@@ -139,22 +140,22 @@ class BotsManager {
         }
     }
 
-//    fun printDiagnostics(batch: Batch, font: BitmapFont) {
-//        bots.forEach { bot ->
-//            val lineSep = 30
-//            val offset = 10
-//            val baseY = Constants.screenHeight - lineSep * bot.botId - offset
-//            val miniatureRadius = 20f
-//            val text = "Bot ${bot.botId}    Score: ${bot.score}, Life: ${bot.life}, Ammo: ${bot.ammo}"
-//
-//            batch.draw(
-//                bot.botImage,
-//                5f,
-//                baseY.toFloat() - miniatureRadius * (3f / 4),
-//                miniatureRadius,
-//                miniatureRadius
-//            )
-//            font.draw(batch, text, miniatureRadius + 10f, baseY.toFloat())
-//        }
-//    }
+    fun printDiagnostics(batch: Batch, font: BitmapFont) {
+        bots.forEach { bot ->
+            val lineSep = 30
+            val offset = 10
+            val baseY = Constants.screenHeight - lineSep * bot.botId - offset
+            val miniatureRadius = 20f
+            val text = "Bot ${bot.botId}    Score: ${bot.score}, Life: ${bot.life}, Ammo: ${bot.ammo}"
+
+            batch.draw(
+                bot.botImage,
+                5f,
+                baseY.toFloat() - miniatureRadius * (3f / 4),
+                miniatureRadius,
+                miniatureRadius
+            )
+            font.draw(batch, text, miniatureRadius + 10f, baseY.toFloat())
+        }
+    }
 }

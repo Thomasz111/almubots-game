@@ -9,25 +9,26 @@ import com.mygdx.game.physics.CirclePhysics
 
 class Bullet(val bot: AlmuBotSimple,
              val hitBox: Circle,
+             private val bulletImage: Texture,
              private val physics: CirclePhysics,
              private val speed: Vector2,
              private val rotation: Float){
     private var collided = false
 
-//    fun draw(batch: Batch){
-//        batch.draw(
-//                TextureRegion(bulletImage),
-//                hitBox.x - hitBox.radius,
-//                hitBox.y - hitBox.radius,
-//                hitBox.radius,
-//                hitBox.radius,
-//                hitBox.radius * 2,
-//                hitBox.radius * 2,
-//                1f,
-//                1f,
-//                rotation
-//        )
-//    }
+    fun draw(batch: Batch){
+        batch.draw(
+                TextureRegion(bulletImage),
+                hitBox.x - hitBox.radius,
+                hitBox.y - hitBox.radius,
+                hitBox.radius,
+                hitBox.radius,
+                hitBox.radius * 2,
+                hitBox.radius * 2,
+                1f,
+                1f,
+                rotation
+        )
+    }
 
     fun outOfBounds(screenWidth: Int, screenHeight: Int): Boolean {
         return physics.outOfBounds(hitBox, screenWidth, screenHeight)
