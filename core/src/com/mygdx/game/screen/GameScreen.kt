@@ -7,10 +7,19 @@ import com.mygdx.game.managers.BotsManager
 import com.mygdx.game.managers.BulletsManager
 import java.util.*
 
+const val MAX_NUM_OF_ROUNDS = 3600
+
 class GameScreen(
         private val botsManager: BotsManager,
         private val bulletsManager: BulletsManager
 ) {
+
+    private var gameReset = false
+    private var roundNum = 0
+
+    fun render() {
+        gameReset = false
+        roundNum += 1
 
     var deltaMicros = System.nanoTime() / 1000L
     var deltaInit = deltaMicros / 1000L
@@ -18,7 +27,6 @@ class GameScreen(
 //    var delta = System.nanoTime() / 1000L
     val calendar = Calendar.getInstance()
 
-    fun render() {
         // generally good practice to update the camera's matrices once per frame
 //        camera.update()
 
@@ -62,13 +70,20 @@ class GameScreen(
         botsManager.updateBots(delta)
         bulletsManager.updateBullets(delta)
 
-        generateResponse(delta)
+        if (roundNum >= MAX_NUM_OF_ROUNDS) {
+            botsManager.reset()
+            bulletsManager.reset()
+            gameReset = true
+            roundNum = 0
+        }
+
+        generateResponse(gameReset, delta)
         botsManager.clearShoots()
     }
 
-    private fun generateResponse(delta: Float) {
+    private fun generateResponse(gameReset: Boolean, delta: Float) {
         val botsStatus = botsManager.getStatus()
-        Synchronizer.gameStatus = GameStatus(botsStatus, delta)
+        Synchronizer.gameStatus = GameStatus(botsStatus, gameReset, delta)
 
         Synchronizer.timestamp = Calendar.getInstance().timeInMillis
 

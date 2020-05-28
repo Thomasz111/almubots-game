@@ -59,4 +59,8 @@ class BulletsManager {
     fun updateBullets(delta: Float) {
         bulletsOnScreen.forEach { bullet -> bullet.update(delta) }
     }
+
+    fun reset() {
+        bulletsOnScreen.clear()
+    }
 }

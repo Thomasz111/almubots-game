@@ -96,6 +96,12 @@ class BotsManager {
         )
     }
 
+    fun reset() {
+        bots.forEach { bot ->
+            bot.reset()
+        }
+    }
+
     fun processUserInputs() {
         if (bots.isNotEmpty() && !bots[0].dead) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

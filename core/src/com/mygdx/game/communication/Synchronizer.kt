@@ -13,7 +13,7 @@ object Synchronizer {
     @Volatile
     var cmds = listOf<Command>()
     @Volatile
-    var gameStatus = GameStatus(listOf(), 0f)
+    var gameStatus = GameStatus(listOf(), reset = false, delta = 0f)
     @Volatile
     var ready: AtomicBoolean = atomic(false)
 }

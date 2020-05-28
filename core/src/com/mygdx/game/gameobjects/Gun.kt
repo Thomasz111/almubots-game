@@ -35,6 +35,10 @@ class Gun(
         bulletsManager.spawnBullet(bot, x, y, rotation)
     }
 
+    fun reset() {
+        rotation = 0f
+    }
+
     fun update(){
         rotation %= 360
     }
