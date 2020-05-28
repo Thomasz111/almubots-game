@@ -13,7 +13,7 @@ class MainMenuScreen(
                      private val botsManager: BotsManager,
                      private val bulletsManager: BulletsManager) { //}: KtxScreen {
 
-    private var numOfBots = 1 //readLine()!!.toInt()
+    private var numOfBots = readLine()!!.toInt()
 
     private val gameScreen: GameScreen = GameScreen(botsManager, bulletsManager)
     private val timer = Timer()
