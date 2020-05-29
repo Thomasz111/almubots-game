@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
+import com.mygdx.game.communication.GameStatus
 import com.mygdx.game.gameobjects.AlmuBotSimple
 import com.mygdx.game.gameobjects.Bullet
 import com.mygdx.game.physics.CirclePhysicsSimple
@@ -54,6 +55,13 @@ class BulletsManager {
                 }
             }
         }
+    }
+
+    fun getStatus() = bulletsOnScreen.map { bullet ->
+        GameStatus.BulletStatus(
+                bullet.bot.botId, bullet.hitBox.x, bullet.hitBox.y,
+                bullet.speed.x, bullet.speed.y, (bullet.rotation + 360) % 360
+        )
     }
 
     fun updateBullets(delta: Float) {

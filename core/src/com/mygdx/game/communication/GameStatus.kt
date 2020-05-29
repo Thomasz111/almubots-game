@@ -1,6 +1,6 @@
 package com.mygdx.game.communication
 
-data class GameStatus(val bots: List<BotStatus>, val reset: Boolean, val delta: Float) {
+data class GameStatus(val bots: List<BotStatus>, val bullets: List<BulletStatus>,  val reset: Boolean, val delta: Float) {
     data class BotStatus(
         val id: Int,
         val x: Float,
@@ -12,5 +12,14 @@ data class GameStatus(val bots: List<BotStatus>, val reset: Boolean, val delta: 
         val life: Int,
         val shoot: Boolean,
         val score: Int
+    )
+
+    data class BulletStatus(
+        val botId: Int,
+        val x: Float,
+        val y: Float,
+        val vx: Float,
+        val vy: Float,
+        val rotation: Float
     )
 }
