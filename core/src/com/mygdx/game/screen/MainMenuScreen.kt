@@ -85,7 +85,7 @@ class MainMenuScreen(private val game: Game,
 //                now = calendar.timeInMillis
 //            }
 //        }
-            val JANUSZ_MODE = true
+            val JANUSZ_MODE = false
 
             if (JANUSZ_MODE) {
                 januszGameScreen = GameScreenWithoutScreen(botsManager, bulletsManager)

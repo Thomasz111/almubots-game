@@ -53,7 +53,7 @@ class Server {
 
 
 //                    println("Got inside: " + post.botNo)
-                    println(Synchronizer.gameStatus)
+//                    println(Synchronizer.gameStatus)
                     call.respond(Synchronizer.gameStatus)
 //                    Synchronizer.numOfBotsResponses += 1
 //                    while (!Synchronizer.ready.value) {}

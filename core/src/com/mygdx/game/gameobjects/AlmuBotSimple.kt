@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.physics.CirclePhysics
+import java.util.*
 import kotlin.math.max
 import kotlin.math.min
+import com.mygdx.game.utils.Constants
 
 const val START_LIFE = 20
 const val START_AMMO = 10
@@ -128,8 +130,9 @@ class AlmuBotSimple(val botId: Int,
         collided = false
         newSpeed = Vector2(0f, 0f)
         positionAfterCollision = Vector2(0f, 0f)
-        hitBox.x = 300 * botId + hitBox.radius * 2
-        hitBox.y = 300 * botId + hitBox.radius * 2
+        val botRadius = 32
+        hitBox.x = (botRadius + Random().nextInt(Constants.screenWidth  - botRadius)).toFloat()
+        hitBox.y = (botRadius + Random().nextInt(Constants.screenHeight - botRadius)).toFloat()
 
         gun.reset()
     }
