@@ -39,6 +39,10 @@ class Server {
                     call.respondText("", ContentType.Text.Html)
                 }
 
+                get("/status") {
+                    call.respond(Synchronizer.gameStatus)
+                }
+
                 post("/cmd") {
                     val now = Calendar.getInstance().timeInMillis
                     val post = call.receive<Command>()
@@ -53,7 +57,7 @@ class Server {
 
 
 //                    println("Got inside: " + post.botNo)
-                    println(Synchronizer.gameStatus)
+//                    println(Synchronizer.gameStatus)
                     call.respond(Synchronizer.gameStatus)
 //                    Synchronizer.numOfBotsResponses += 1
 //                    while (!Synchronizer.ready.value) {}

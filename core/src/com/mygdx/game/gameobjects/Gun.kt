@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.mygdx.game.managers.BulletsManager
+import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -13,7 +14,7 @@ class Gun(
         private val length: Float,
         private val height: Float){
 
-    var rotation = 0f
+    var rotation = Random().nextFloat()*360
 
     fun draw(batch: Batch, bot: AlmuBotSimple){
         batch.draw(
@@ -37,7 +38,7 @@ class Gun(
     }
 
     fun reset() {
-        rotation = 0f
+        rotation = Random().nextFloat()*360
     }
 
     fun update(){

@@ -14,7 +14,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.util.*
 
-const val MAX_NUM_OF_ROUNDS = 200
+const val MAX_NUM_OF_ROUNDS = 500
 
 class GameScreen(private val batch: Batch,
                  private val font: BitmapFont,
