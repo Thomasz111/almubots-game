@@ -11,7 +11,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import java.util.*
 
-const val MAX_NUM_OF_ROUNDS = 3600
+const val MAX_NUM_OF_ROUNDS = 500
 
 class GameScreen(
         private val batch: Batch,
@@ -64,7 +64,8 @@ class GameScreen(
         botsManager.updateBots(delta)
         bulletsManager.updateBullets(delta)
 
-        if (roundNum >= MAX_NUM_OF_ROUNDS) {
+        if (botsManager.smbwn(MAX_NUM_OF_ROUNDS)) {
+            botsManager.bots.forEach {bot -> println(bot.botId.toString() + " " + bot.score.toString())}
             botsManager.reset()
             bulletsManager.reset()
             gameReset = true

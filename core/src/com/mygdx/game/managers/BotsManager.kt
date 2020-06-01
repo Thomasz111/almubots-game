@@ -158,4 +158,8 @@ class BotsManager {
             font.draw(batch, text, miniatureRadius + 10f, baseY.toFloat())
         }
     }
+
+    fun smbwn(maxNumOfRounds: Int): Boolean {
+        return bots.any { bot -> bot.score >= maxNumOfRounds }
+    }
 }
