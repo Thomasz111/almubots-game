@@ -77,7 +77,8 @@ class GameScreen(
 
     private fun generateResponse(gameReset: Boolean, delta: Float) {
         val botsStatus = botsManager.getStatus()
-        Synchronizer.gameStatus = GameStatus(botsStatus, gameReset, delta)
+        val bulletsStatus = bulletsManager.getStatus()
+        Synchronizer.gameStatus = GameStatus(botsStatus, bulletsStatus, gameReset, delta)
 
         Synchronizer.timestamp = Calendar.getInstance().time
     }

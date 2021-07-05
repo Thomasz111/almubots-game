@@ -11,8 +11,8 @@ class Bullet(val bot: AlmuBotSimple,
              val hitBox: Circle,
              private val bulletImage: Texture,
              private val physics: CirclePhysics,
-             private val speed: Vector2,
-             private val rotation: Float){
+             val speed: Vector2,
+             val rotation: Float){
     private var collided = false
 
     fun draw(batch: Batch){
